@@ -109,16 +109,10 @@ class ConstructorTest: XCTestCase {
         XCTAssertEqual(x4, BInt(65280))
         let x5 = BInt(magnitude: [255, 255])
         XCTAssertEqual(x5, BInt(65535))
-        let x6 = BInt(magnitude:
-            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-             0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff,
-             0xff, 0xff, 0xff, 0xff])
-        XCTAssertEqual(x6, BInt(0xfffffffffffffffffffffffffffffffeffffffffffffffff))
-        let x7 = BInt(signed:
-            [0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff,
-             0xff, 0xff, 0xff, 0xff, 0xff])
-        XCTAssertEqual(x7, BInt(0xfffffffffffffffffffffffffffffffeffffffffffffffff))
+        let x6 = BInt(magnitude: [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+        XCTAssertEqual(x6, BInt("fffffffffffffffffffffffffffffffeffffffffffffffff", radix: 16)!)
+        let x7 = BInt(signed: [0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+        XCTAssertEqual(x7, BInt("fffffffffffffffffffffffffffffffeffffffffffffffff", radix: 16)!)
     }
 
     func doTest6(_ n: Int) {
@@ -178,14 +172,14 @@ class ConstructorTest: XCTestCase {
     }
     
     // BInt from a StaticBigInt
-    func test8a() {
-        let bigNumber = BInt(1234567890_1234567890_1234567890_1234567890)
-        let nbigNumber = BInt(-1234567890_1234567890_1234567890_1234567890)
-        XCTAssertEqual(bigNumber.description,
-                       "1234567890123456789012345678901234567890")
-        XCTAssertEqual(nbigNumber.description,
-                       "-1234567890123456789012345678901234567890")
-    }
+//    func test8a() {
+//        let bigNumber = BInt(1234567890_1234567890_1234567890_1234567890)
+//        let nbigNumber = BInt(-1234567890_1234567890_1234567890_1234567890)
+//        XCTAssertEqual(bigNumber.description,
+//                       "1234567890123456789012345678901234567890")
+//        XCTAssertEqual(nbigNumber.description,
+//                       "-1234567890123456789012345678901234567890")
+//    }
     
     let strings = ["0",
                    "10",

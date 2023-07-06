@@ -288,27 +288,28 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
 extension BInt : SignedInteger { }
 
 /// Add support for `StaticBigInt` - 24 Jun 2023 - MG
-extension BInt : ExpressibleByIntegerLiteral {
-    public init(integerLiteral value: StaticBigInt) {
-        let isNegative = value.signum() < 0
-        let bitWidth = value.bitWidth
-        if bitWidth < Int.bitWidth {
-            self.init(Int(bitPattern: value[0]))
-        } else {
-            precondition(value[0].bitWidth == 64, "Requires 64-bit Ints!")
-            let noOfWords = (bitWidth / 64) + 1 // must be 64-bit system
-            var words = Limbs()
-            for index in 0..<noOfWords {
-                // StaticBigInt words are 2's complement so negative
-                // values needed to be inverted and have one added
-                if isNegative { words.append(UInt64(~value[index])) }
-                else { words.append(UInt64(value[index])) }
-            }
-            self.init(words, false)
-            if isNegative { self += 1; self.negate() }
-        }
-    }
-}
+//@available(macOS 13.3, *)
+//extension BInt : ExpressibleByIntegerLiteral {
+//    public init(integerLiteral value: StaticBigInt) {
+//        let isNegative = value.signum() < 0
+//        let bitWidth = value.bitWidth
+//        if bitWidth < Int.bitWidth {
+//            self.init(Int(bitPattern: value[0]))
+//        } else {
+//            precondition(value[0].bitWidth == 64, "Requires 64-bit Ints!")
+//            let noOfWords = (bitWidth / 64) + 1 // must be 64-bit system
+//            var words = Limbs()
+//            for index in 0..<noOfWords {
+//                // StaticBigInt words are 2's complement so negative
+//                // values needed to be inverted and have one added
+//                if isNegative { words.append(UInt64(~value[index])) }
+//                else { words.append(UInt64(value[index])) }
+//            }
+//            self.init(words, false)
+//            if isNegative { self += 1; self.negate() }
+//        }
+//    }
+//}
 
 /// Add support for `ExpressibleByStringLiteral` protocol  - 24 Jun 2023 - MG
 extension BInt : ExpressibleByStringLiteral {
@@ -321,7 +322,13 @@ extension BInt : ExpressibleByStringLiteral {
     }
 }
 
-extension BInt : Numeric { // Also implies AdditiveArithmetic compliance
+extension BInt : Numeric {
+    
+    public init(integerLiteral value: Int) {
+        self.init(value)
+    }
+
+    // Also implies AdditiveArithmetic compliance
     /// Compliance to this protocol enables BInt to use algorithms that
     /// have been developed with a Numeric protocol generic constraint.
     
@@ -347,6 +354,8 @@ extension BInt : Numeric { // Also implies AdditiveArithmetic compliance
         self.init(bwords, false)
         if isNegative { self += 1; self.negate() }
     }
+    
+    // public init(_ source: Int) { self.init(exactly: source)! }
 }
 
 extension BInt : BinaryInteger {
