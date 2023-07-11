@@ -1834,13 +1834,15 @@ extension BInt {
     // MARK: Prime number functions
     
     static internal func randomBytes(_ bytes: inout Bytes) {
-        guard SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes) == errSecSuccess else {
+        // Use nil in place of kSecRandomDefault for Linux compatibility
+        guard SecRandomCopyBytes(nil, bytes.count, &bytes) == errSecSuccess else {
             fatalError("randomBytes failed")
         }
     }
-    
+
     static internal func randomLimbs(_ limbs: inout Limbs) {
-        guard SecRandomCopyBytes(kSecRandomDefault, 8 * limbs.count, &limbs) == errSecSuccess else {
+        // Use nil in place of kSecRandomDefault for Linux compatibility
+        guard SecRandomCopyBytes(nil, 8 * limbs.count, &limbs) == errSecSuccess else {
             fatalError("randomLimbs failed")
         }
     }
