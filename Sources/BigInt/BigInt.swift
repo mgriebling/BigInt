@@ -1835,14 +1835,15 @@ extension BInt {
     
     static internal func randomBytes(_ bytes: inout Bytes) {
         // Use nil in place of kSecRandomDefault for Linux compatibility
-        guard SecRandomCopyBytes(nil, bytes.count, &bytes) == errSecSuccess else {
+        // Sub 0 for errSecSuccess
+        guard SecRandomCopyBytes(nil, bytes.count, &bytes) == 0 else {
             fatalError("randomBytes failed")
         }
     }
 
     static internal func randomLimbs(_ limbs: inout Limbs) {
         // Use nil in place of kSecRandomDefault for Linux compatibility
-        guard SecRandomCopyBytes(nil, 8 * limbs.count, &limbs) == errSecSuccess else {
+        guard SecRandomCopyBytes(nil, 8 * limbs.count, &limbs) == 0 else {
             fatalError("randomLimbs failed")
         }
     }
