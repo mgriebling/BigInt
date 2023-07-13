@@ -1139,8 +1139,8 @@ extension BInt {
     public func quotientAndRemainder(dividingBy x: BInt) -> (quotient: BInt, remainder: BInt) {
         var quotient = BInt.zero
         var remainder = BInt.zero
-        if x.limbs.count > Limbs.BZ_DIV_LIMIT && self.limbs.count > x.limbs.count + Limbs.BZ_DIV_LIMIT {
-            (quotient.limbs, remainder.limbs) = self.limbs.bzDivMod(x.limbs)
+        if x.limbs.count > BInt.BZ_DIV_LIMIT && self.limbs.count > x.limbs.count + BInt.BZ_DIV_LIMIT {
+            (quotient, remainder) = self.bzDivMod(x)
         } else {
             (quotient.limbs, remainder.limbs) = self.limbs.divMod(x.limbs)
         }
