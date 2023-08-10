@@ -1728,11 +1728,11 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     
     #if os(Linux)
     static internal func randomBytes(_ bytes: inout Bytes) {
-        for i in bytes.indices { bytes[i] = Byte.random(in: bytes.indices) }
+        for i in bytes.indices { bytes[i] = Byte.random(in: Byte.min...Byte.max) }
     }
     
     static internal func randomLimbs(_ limbs: inout Limbs) {
-        for i in limbs.indices { limbs[i] = Limb.random(in: limbs.indices) }
+        for i in limbs.indices { limbs[i] = Limb.random(in: Limb.min...Limb.max) }
     }
     #else
     static internal func randomBytes(_ bytes: inout Bytes) {
@@ -1740,7 +1740,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
             fatalError("randomBytes failed")
         }
     }
-    
+
     static internal func randomLimbs(_ limbs: inout Limbs) {
         guard SecRandomCopyBytes(kSecRandomDefault, 8 * limbs.count, &limbs) == errSecSuccess else {
             fatalError("randomLimbs failed")
@@ -1748,8 +1748,8 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     }
     #endif
     
-    // Small prime product
-    static let SPP = BInt("152125131763605")! // = 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23 * 29 * 31 * 37 * 41
+    // Small prime product (152125131763605)
+    static let SPP = BInt(3*5*7*11*13*17*19*23*29*31*37*41) // 12 primes
     
     static func smallPrime(_ bitLength: Int) -> BInt {
         let multiple8 = bitLength & 0x7 == 0
