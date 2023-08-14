@@ -18,6 +18,27 @@ Its functionality falls in the following categories:
  - Primes: prime number testing, probable prime number generation and primorial
  - Miscellaneous: random number generation, greatest common divisor, least common multiple, n-th root, square root modulo an odd prime, Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers
  - Fractions: Standard arithmetic on fractions whose numerators and denominators are of unbounded size
+ 
+ ## Protocol support
+ 
+ - Added `SignedInteger`, `BinaryInteger`, and `Numeric` protocol compliance.
+ - Optional support for `StaticBigInt` to allow `BigInt` number initialization
+   from very large integer literals. Uncomment the `BigInt-Extensions` 
+   `StaticBigInt` support.
+ 
+ Why support protocols? By supporting them you have the ability to
+ formulate generic algorithms and make use of algorithms from others
+ that use the protocol type(s) you support. For example, `Strideable`
+ compliance is free (with `BinaryInteger`) and lets you do things like
+ 
+ ```swift
+ for i in BInt(1)...10 {
+    print(i.words)
+ }
+ ```
+ 
+ In addition, if a third party defines extensions for the supported protocols,
+ these can be easily adapted by just conforming to that protocol.
 
 BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
 
