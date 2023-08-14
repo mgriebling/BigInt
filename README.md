@@ -1,41 +1,39 @@
-<h2><b>BigInt</b></h2>
-<h3><b>Contents:</b></h3>
-<ul>
-<li><a href="#use">Usage</a></li>
-<li><a href="#ex">Examples</a>
-<li><a href="#perf">Performance</a>
-<li><a href="#frac">Fractions</a>
-<li><a href="#crt">Chinese Remainder Theorem</a>
-<li><a href="#ref">References</a>
-<li><a href="#alg">Algorithms</a>
-</ul>
+# BigInt
+
 The BigInt package provides arbitrary-precision integer arithmetic in Swift.
 Its functionality falls in the following categories:
-<ul>
-<li>Arithmetic: add, subtract, multiply, divide, remainder and exponentiation</li>
-<li>Comparison: the six standard operations == != < <= > >=</li>
-<li>Shifting: logical left shift and rigth shift</li>
-<li>Logical: bitwise and, or, xor, and not</li>
-<li>Modulo: normal modulus, inverse modulus, and modular exponentiation</li>
-<li>Conversion: to double, to integer, to string, to magnitude byte array, and to 2's complement byte array</li>
-<li>Primes: prime number testing, probable prime number generation and primorial</li>
-<li>Miscellaneous: random number generation, greatest common divisor, least common multiple, n-th root, square root modulo an odd prime,
-Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers</li>
-<li>Fractions: Standard arithmetic on fractions whose numerators and denominators are of unbounded size</li>
-</ul>
+
+ - Performance: 
+    - Division 2x AttaSwift
+    - Multiplication 7x AttaSwift
+    - Logic functions 2x AttaSwift
+    - Convert to String 3x AttaSwift
+    - Shifts up to 16x AttaSwift
+ - Arithmetic: add, subtract, multiply, divide, remainder and exponentiation
+ - Comparison: the six standard operations == != < <= > >=
+ - Shifting: logical left shift and rigth shift
+ - Logical: bitwise and, or, xor, and not
+ - Modulo: normal modulus, inverse modulus, and modular exponentiation
+ - Conversion: to double, to integer, to string, to magnitude byte array, and to 2's complement byte array
+ - Primes: prime number testing, probable prime number generation and primorial
+ - Miscellaneous: random number generation, greatest common divisor, least common multiple, n-th root, square root modulo an odd prime, Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers
+ - Fractions: Standard arithmetic on fractions whose numerators and denominators are of unbounded size
 
 BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
 
-<h2 id="use"><b>Usage</b></h2>
-In your projects Package.swift file add a dependency like<br/>
+## Usage
+In your projects Package.swift file add a dependency like
 
-	  dependencies: [
-	  .package(url: "https://github.com/leif-ibsen/BigInt", from: "1.13.0"),
-	  ]
+```
+dependencies: [
+    .package(url: "https://github.com/mgriebling/BigInt.git", from: "2.0.0"),
+]
+```
 
-<h2 id="ex"><b>Examples</b></h2>
-<h3><b>Creating BInt's</b></h3>
+## Examples
+### Creating BInt's
 
+```swift
 	  // From an integer
 	  let a = BInt(27)
 	  
@@ -62,10 +60,11 @@ In your projects Package.swift file add a dependency like<br/>
 	  
 	  // Random value less than a given value
 	  let i = h.randomLessThan() // For example i = 583464003284
+```
 	  
+### Converting BInt's
 
-<h3><b>Converting BInt's</b></h3>
-
+```swift
 	  let x = BInt(16777087)
 	  
 	  // To double
@@ -80,91 +79,95 @@ In your projects Package.swift file add a dependency like<br/>
 	  
 	  // To big-endian 2's complement byte array
 	  let b2 = x.asSignedBytes() // b2 = [0, 255, 255, 127]
-	  
+```
 
-<h2 id="perf"><b>Performance</b></h2>
+## Performance
 
 To assess the performance of BigInt, the execution times for a number of common operations were measured on an iMac 2021, Apple M1 chip.
 The results are in the table below. It shows the operation being measured and the time it took (in microseconds or milliseconds).
 
 Four large numbers 'a1000', 'b1000', 'c2000' and 'p1000' were used throughout the measurements. Their actual values are shown under the table.
 
-<table width="90%">
-<tr><th width="40%" align="left">Operation</th><th width="35%" align="right">Swift code</th><th width="25%" align="right">Time</th></tr>
-<tr><td>As string</td><td align="right">c2000.asString()</td><td align="right">13 uSec</td></tr>
-<tr><td>As signed bytes</td><td align="right">c2000.asSignedBytes()</td><td align="right">0.30 uSec</td></tr>
-<tr><td>Bitwise and</td><td align="right">a1000 & b1000</td><td align="right">0.083 uSec</td></tr>
-<tr><td>Bitwise or</td><td align="right">a1000 | b1000</td><td align="right">0.083 uSec</td></tr>
-<tr><td>Bitwise xor</td><td align="right">a1000 ^ b1000</td><td align="right">0.082 uSec</td></tr>
-<tr><td>Bitwise not</td><td align="right">~c2000</td><td align="right">0.087 uSec</td></tr>
-<tr><td>Test bit</td><td align="right">c2000.testBit(701)</td><td align="right">0.017 uSec</td></tr>
-<tr><td>Flip bit</td><td align="right">c2000.flipBit(701)</td><td align="right">0.018 uSec</td></tr>
-<tr><td>Set bit</td><td align="right">c2000.setBit(701)</td><td align="right">0.018 uSec</td></tr>
-<tr><td>Clear bit</td><td align="right">c2000.clearBit(701)</td><td align="right">0.018 uSec</td></tr>
-<tr><td>Addition</td><td align="right">a1000 + b1000</td><td align="right">0.07 uSec</td></tr>
-<tr><td>Subtraction</td><td align="right">a1000 - b1000</td><td align="right">0.08 uSec</td></tr>
-<tr><td>Multiplication</td><td align="right">a1000 * b1000</td><td align="right">0.32 uSec</td></tr>
-<tr><td>Division</td><td align="right">c2000 / a1000</td><td align="right">2.2 uSec</td></tr>
-<tr><td>Modulus</td><td align="right">c2000.mod(a1000)</td><td align="right">2.2 uSec</td></tr>
-<tr><td>Inverse modulus</td><td align="right">c2000.modInverse(p1000)</td><td align="right">83 uSec</td></tr>
-<tr><td>Modular exponentiation</td><td align="right">a1000.expMod(b1000, c2000)</td><td align="right">3.5 mSec</td></tr>
-<tr><td>Equal</td><td align="right">c2000 + 1 == c2000</td><td align="right">0.017 uSec</td></tr>
-<tr><td>Less than</td><td align="right">b1000 + 1 < b1000</td><td align="right">0.021 uSec</td></tr>
-<tr><td>Shift 1 left</td><td align="right">c2000 <<= 1</td><td align="right">0.05 uSec</td></tr>
-<tr><td>Shift 1 right</td><td align="right">c2000 >>= 1</td><td align="right">0.06 uSec</td></tr>
-<tr><td>Shift 100 left</td><td align="right">c2000 <<= 100</td><td align="right">0.14 uSec</td></tr>
-<tr><td>Shift 100 right</td><td align="right">c2000 >>= 100</td><td align="right">0.11 uSec</td></tr>
-<tr><td>Is probably prime</td><td align="right">p1000.isProbablyPrime()</td><td align="right">5.8 mSec</td></tr>
-<tr><td>Make probable 1000 bit prime</td><td align="right">BInt.probablePrime(1000)</td><td align="right">60 mSec</td></tr>
-<tr><td>Next probable prime</td><td align="right">c2000.nextPrime()</td><td align="right">730 mSec</td></tr>
-<tr><td>Primorial</td><td align="right">BInt.primorial(100000)</td><td align="right">8.5 mSec</td></tr>
-<tr><td>Binomial</td><td align="right">BInt.binomial(100000, 10000)</td><td align="right">22 mSec</td></tr>
-<tr><td>Factorial</td><td align="right">BInt.factorial(100000)</td><td align="right">57 mSec</td></tr>
-<tr><td>Fibonacci</td><td align="right">BInt.fibonacci(100000)</td><td align="right">0.22 mSec</td></tr>
-<tr><td>Greatest common divisor</td><td align="right">a1000.gcd(b1000)</td><td align="right">29 uSec</td></tr>
-<tr><td>Extended gcd</td><td align="right">a1000.gcdExtended(b1000)</td><td align="right">81 uSec</td></tr>
-<tr><td>Least common multiple</td><td align="right">a1000.lcm(b1000)</td><td align="right">32 uSec</td></tr>
-<tr><td>Make random number</td><td align="right">c2000.randomLessThan()</td><td align="right">1.2 uSec</td></tr>
-<tr><td>Square</td><td align="right">c2000 ** 2</td><td align="right">0.68 uSec</td></tr>
-<tr><td>Square root</td><td align="right">c2000.sqrt()</td><td align="right">13 uSec</td></tr>
-<tr><td>Square root and remainder</td><td align="right">c2000.sqrtRemainder()</td><td align="right">13 uSec</td></tr>
-<tr><td>Is perfect square</td><td align="right">(c2000 * c2000).isPerfectSquare()</td><td align="right">16 uSec</td></tr>
-<tr><td>Square root modulo</td><td align="right">b1000.sqrtMod(p1000)</td><td align="right">1.6 mSec</td></tr>
-<tr><td>Power</td><td align="right">c2000 ** 111</td><td align="right">1.9 mSec</td></tr>
-<tr><td>Root</td><td align="right">c2000.root(111)</td><td align="right">15 uSec</td></tr>
-<tr><td>Root and remainder</td><td align="right">c2000.rootRemainder(111)</td><td align="right">17 uSec</td></tr>
-<tr><td>Is perfect root</td><td align="right">c2000.isPerfectRoot()</td><td align="right">13 mSec</td></tr>
-<tr><td>Jacobi symbol</td><td align="right">c2000.jacobiSymbol(p1000)</td><td align="right">0.15 mSec</td></tr>
-<tr><td>Kronecker symbol</td><td align="right">c2000.kroneckerSymbol(p1000)</td><td align="right">0.15 mSec</td></tr>
-<tr><td>Bernoulli number</td><td align="right">BFraction.bernoulli(1000)</td><td align="right">83 mSec</td></tr>
-</table>
+| Operation | Swift code | Time |
+| --------- | ---------- | ---- |
+| As string | c2000.asString() | 13 uSec |
+| As signed bytes | c2000.asSignedBytes() | 0.30 uSec |
+| Bitwise and | a1000 & b1000 | 0.083 uSec |
+| Bitwise or | a1000 | b1000 | 0.083 uSec |
+| Bitwise xor | a1000 ^ b1000 | 0.082 uSec |
+| Bitwise not | ~c2000 | 0.087 uSec |
+| Test bit | c2000.testBit(701) | 0.017 uSec |
+| Flip bit | c2000.flipBit(701) | 0.018 uSec |
+| Set bit | c2000.setBit(701) | 0.018 uSec |
+| Clear bit | c2000.clearBit(701) | 0.018 uSec |
+| Addition | a1000 + b1000 | 0.07 uSec |
+| Subtraction | a1000 - b1000 | 0.08 uSec |
+| Multiplication | a1000 \* b1000 | 0.32 uSec |
+| Division | c2000 / a1000 | 2.2 uSec |
+| Modulus | c2000.mod(a1000) | 2.2 uSec |
+| Inverse modulus | c2000.modInverse(p1000) | 83 uSec |
+| Modular exponentiation | a1000.expMod(b1000, c2000) | 3.5 mSec |
+| Equal | c2000 + 1 == c2000 | 0.017 uSec |
+| Less than | b1000 + 1 \< b1000 | 0.021 uSec |
+| Shift 1 left | c2000 \<\<= 1 | 0.05 uSec |
+| Shift 1 right | c2000 >>= 1 | 0.06 uSec |
+| Shift 100 left | c2000 \<\<= 100 | 0.14 uSec |
+| Shift 100 right | c2000 >>= 100 | 0.11 uSec |
+| Is probably prime | p1000.isProbablyPrime() | 5.8 mSec |
+| Make probable 1000 bit prime | BInt.probablePrime(1000) | 60 mSec |
+| Next probable prime | c2000.nextPrime() | 730 mSec |
+| Primorial | BInt.primorial(100000) | 8.5 mSec |
+| Binomial | BInt.binomial(100000, 10000) | 22 mSec |
+| Factorial | BInt.factorial(100000) | 57 mSec |
+| Fibonacci | BInt.fibonacci(100000) | 0.22 mSec |
+| Greatest common divisor | a1000.gcd(b1000) | 29 uSec |
+| Extended gcd | a1000.gcdExtended(b1000) | 81 uSec |
+| Least common multiple | a1000.lcm(b1000) | 32 uSec |
+| Make random number | c2000.randomLessThan() | 1.2 uSec |
+| Square | c2000 \*\* 2 | 0.68 uSec |
+| Square root | c2000.sqrt() | 13 uSec |
+| Square root and remainder | c2000.sqrtRemainder() | 13 uSec |
+| Is perfect square | (c2000 \* c2000).isPerfectSquare() | 16 uSec |
+| Square root modulo | b1000.sqrtMod(p1000) | 1.6 mSec |
+| Power | c2000 \*\* 111 | 1.9 mSec |
+| Root | c2000.root(111) | 15 uSec |
+| Root and remainder | c2000.rootRemainder(111) | 17 uSec |
+| Is perfect root | c2000.isPerfectRoot() | 13 mSec |
+| Jacobi symbol | c2000.jacobiSymbol(p1000) | 0.15 mSec |
+| Kronecker symbol | c2000.kroneckerSymbol(p1000) | 0.15 mSec |
+| Bernoulli number | BFraction.bernoulli(1000) | 83 mSec |
 
-a1000 = 3187705437890850041662973758105262878153514794996698172406519277876060364087986868049465132757493318066301987043192958841748826350731448419937544810921786918975580180410200630645469411588934094075222404396990984350815153163569041641732160380739556436955287671287935796642478260435292021117614349253825<br/>
-b1000 = 9159373012373110951130589007821321098436345855865428979299172149373720601254669552044211236974571462005332583657082428026625366060511329189733296464187785766230514564038057370938741745651937465362625449921195096442684523511715110908407508139315000469851121118117438147266381183636498494901233452870695<br/>
-c2000 = 1190583332681083129323588684910845359379915367459759242106618067261956856381281184752008892106576666833853411939711280970145570546868549934865719229538926506588929417873149597614787608112658086250354719939407543740242931571462165384138560315454455247539461818779966171917173966217706187439870264672508450210272481951994459523586160979759782950984370978171111340529321052541588344733968902238813379990628157732181128074253104347868153860527298911917508606081710893794973605227829729403843750412766366804402629686458092685235454222856584200220355212623917637542398554907364450159627359316156463617143173<br/>
-p1000 (probably a prime) = 7662841304438384296568220077355872003841475576593385710590818274399706072141018649398767137142090308734613594718593893634649122767374115742644499040193270857876678047220373151142747088797516044505739487695946446362769947024029728822155570722524629197074319602110260674029276185098937139753025851896997<br/>
 
-<h2 id="frac"><b>Fractions</b></h2>
+```
+a1000 = 3187705437890850041662973758105262878153514794996698172406519277876060364087986868049465132757493318066301987043192958841748826350731448419937544810921786918975580180410200630645469411588934094075222404396990984350815153163569041641732160380739556436955287671287935796642478260435292021117614349253825
+b1000 = 9159373012373110951130589007821321098436345855865428979299172149373720601254669552044211236974571462005332583657082428026625366060511329189733296464187785766230514564038057370938741745651937465362625449921195096442684523511715110908407508139315000469851121118117438147266381183636498494901233452870695
+c2000 = 1190583332681083129323588684910845359379915367459759242106618067261956856381281184752008892106576666833853411939711280970145570546868549934865719229538926506588929417873149597614787608112658086250354719939407543740242931571462165384138560315454455247539461818779966171917173966217706187439870264672508450210272481951994459523586160979759782950984370978171111340529321052541588344733968902238813379990628157732181128074253104347868153860527298911917508606081710893794973605227829729403843750412766366804402629686458092685235454222856584200220355212623917637542398554907364450159627359316156463617143173
+p1000 (probably a prime) = 7662841304438384296568220077355872003841475576593385710590818274399706072141018649398767137142090308734613594718593893634649122767374115742644499040193270857876678047220373151142747088797516044505739487695946446362769947024029728822155570722524629197074319602110260674029276185098937139753025851896997
+```
+
+## Fractions
 Fractions are represented as BFraction values consisting of a numerator BInt value and a denominator BInt value. The representation is normalized:
-<ul>
-<li>The numerator and denominator have no common factors except 1</li>
-<li>The denominator is always positive</li>
-<li>Zero is represented as 0/1</li>
-</ul>
-<h3><b>Creating BFraction's</b></h3>
+
+ - The numerator and denominator have no common factors except 1
+ - The denominator is always positive
+ - Zero is represented as 0/1
+
+### Creating BFraction's
 Fractions are created by
-<ul>
-<li>Specifying the numerator and denominator explicitly f.ex. BFraction(17, 4)</li>
-<li>Specifying the decimal value explictly f.ex. BFraction(4.25)</li>
-<li>Using a string representation f.ex. BFraction("4.25")! or equivalently BFraction("425E-2")!</li>
-</ul>
+
+ - Specifying the numerator and denominator explicitly f.ex. BFraction(17, 4)
+ - Specifying the decimal value explictly f.ex. BFraction(4.25)
+ - Using a string representation f.ex. BFraction("4.25")! or equivalently BFraction("425E-2")!
+
 Defining a fraction by giving its decimal value (like 4.25) might lead to surprises,
 because not all decimal values can be represented exactly as a floating point number.
 For example, one might think that BFraction(0.1) would equal 1/10,
-but in fact it equals 3602879701896397 / 36028797018963968 = 0.1000000000000000055511151231257827021181583404541015625<br/>
-<h3><b>Converting BFraction's</b></h3>
+but in fact it equals 3602879701896397 / 36028797018963968 = 0.1000000000000000055511151231257827021181583404541015625
+
+### Converting BFraction's
 BFraction values can be converted to String values, to decimal String values and to Double values.
 
+```swift
 	  let x = BFraction(1000, 7)
 	  
 	  // To String
@@ -176,124 +179,149 @@ BFraction values can be converted to String values, to decimal String values and
 	  
 	  // To Double
 	  let d = x.asDouble() // d = 142.8571428571429
+```
 	  
-<h3><b>Operations</b></h3>
+### Operations
 The operations available to fractions are:
-<ul>
-<li>Arithmetic
-<ul>
-	<li>addition</li>
-	<li>subtraction</li>
-	<li>multiplication</li>
-	<li>division</li>
-	<li>modulo an integer</li>
-	<li>exponentiation</li>
-</ul>
-</li>
-<li>Rounding to an integer
-<ul>
-	<li>round - to nearest integer</li>
-	<li>truncate - towards 0</li>
-	<li>ceil - towards +infinity</li>
-	<li>floor - towards -infinity</li>
-</ul>
-</li>
-<li>Comparison - the six standard operations == != < <= > >=</li>
-</ul>
-<h3><b>Bernoulli Numbers</b></h3>
-The static function<br/>
 
+ - Arithmetic
+
+	 - addition
+	 - subtraction
+	 - multiplication
+	 - division
+	 - modulo an integer
+	 - exponentiation
+
+
+ - Rounding to an integer
+
+	 - round - to nearest integer
+	 - truncate - towards 0
+	 - ceil - towards +infinity
+	 - floor - towards -infinity
+
+
+ - Comparison - the six standard operations `==` `!=` `<` `<=` `>` `>=`
+
+### Bernoulli Numbers
+The static function
+
+```swift
 	let bn = BFraction.bernoulli(n)
+```
 
-computes the n'th (n >= 0) Bernoulli number, which is a rational number.<br/>
-For example<br/>
+computes the n'th (n >= 0) Bernoulli number, which is a rational number.
+For example
 
+```swift
 	print(BFraction.bernoulli(60))
 	print(BFraction.bernoulli(60).asDecimalString(precision: 20, exponential: true))
+```   
 
-would print<br/>
+would print
 
+```
 	-1215233140483755572040304994079820246041491 / 56786730
 	-2.1399949257225333665E+34
+```
 
-The static function<br/>
+The static function
 
+```swift
 	let x = BFraction.bernoulliSequence(n)
+```
 
-computes the n even numbered Bernoulli numbers B(0), B(2) ... B(2 * n - 2).<br/>
+computes the n even numbered Bernoulli numbers B(0), B(2) ... B(2 \* n - 2).
 
-<h2 id="crt"><b>Chinese Remainder Theorem</b></h2>
+## Chinese Remainder Theorem
 The CRT structure implements the Chinese Remainder Theorem. Construct a CRT instance from a given set of moduli,
 and then use the *compute* method to compute the CRT value for a given set of residues. The same instance can be reused
 for any set of input data, as long as the moduli are the same.
-This is relevant because it takes longer time to create the CRT instance than to compute the CRT value.<br/>
-For example<br/>
+This is relevant because it takes longer to create the CRT instance than to compute the CRT value.
+For example:
 
+```swift
 	let moduli = [3, 5, 7]
 	let residues = [2, 2, 6]
 	let crt = CRT(moduli)!
 	print("CRT value:", crt.compute(residues))
+```
 
-would print<br/>
+would print
 
+```
 	CRT value: 62
+```
 
-<h2 id="ref"><b>References</b></h2>
+## References
 
 Algorithms from the following books and papers have been used in the implementation.
 There are references in the source code where appropriate.
 
-<ul>
-<li>[BRENT] - Brent and Zimmermann: Modern Computer Arithmetic, 2010</li>
-<li>[BURNIKEL] - Burnikel and Ziegler: Fast Recursive Division, October 1998</li>
-<li>[CRANDALL] - Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005</li>
-<li>[GRANLUND] - Moller and Granlund: Improved Division by Invariant Integers, 2011</li>
-<li>[HACKER] - Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley</li>
-<li>[HANDBOOK] - Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996</li>
-<li>[JEBELEAN] - Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993</li>
-<li>[KNUTH] - Donald E. Knuth: Seminumerical Algorithms, Third Edition</li>
-<li>[KOC] - Cetin Kaya Koc: A New Algorithm for Inversion mod p^k</li>
-</ul>
 
-<h2 id="alg"><b>Algorithms</b></h2>
+  1. [BRENT]: Brent and Zimmermann: Modern Computer Arithmetic, 2010
+  2. [BURNIKEL]: Burnikel and Ziegler: Fast Recursive Division, October 1998
+  3. [CRANDALL]: Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005
+  4. [GRANLUND]: Moller and Granlund: Improved Division by Invariant Integers, 2011
+  5. [HACKER]: Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley
+  6. [HANDBOOK]: Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996
+  7. [JEBELEAN]: Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993
+  8. [KNUTH]: Donald E. Knuth: Seminumerical Algorithms, Third Edition
+  9. [KOC]: Cetin Kaya Koc: A New Algorithm for Inversion mod p^k
+
+
+## Algorithms
 Some of the algorithms used in BigInt are described below.
-<h3><b>Multiplication</b></h3>
-<ul>
-<li>Schonhage-Strassen FFT based algorithm for numbers above 384000 bits</li>
-<li>ToomCook-3 algorithm for numbers above 12800 bits</li>
-<li>Karatsuba algorithm for numbers above 6400 bits</li>
-<li>Basecase - Knuth algorithm M</li>
-</ul>
-<h3><b>Division and Remainder</b></h3>
-<ul>
-<li>Burnikel-Ziegler algorithm for divisors above 3840 bits provided the dividend has at least 3840 bits more than the divisor</li>
-<li>Basecase - Knuth algorithm D</li>
-<li>Exact Division - Jebelean's exact division algorithm</li>
-</ul>
-<h3><b>Greatest Common Divisor and Extended Greatest Common Divisor</b></h3>
+
+### Multiplication
+
+ - Schonhage-Strassen FFT based algorithm for numbers above 384000 bits
+ - ToomCook-3 algorithm for numbers above 12800 bits
+ - Karatsuba algorithm for numbers above 6400 bits
+ - Basecase - Knuth algorithm M
+
+### Division and Remainder
+
+ - Burnikel-Ziegler algorithm for divisors above 3840 bits provided the dividend has at least 3840 bits more than the divisor
+ - Basecase - Knuth algorithm D
+ - Exact Division - Jebelean's exact division algorithm
+
+### Greatest Common Divisor and Extended Greatest Common Divisor
 Lehmer's algorithm [KNUTH] chapter 4.5.2, with binary GCD basecase.
-<h3><b>Modular Exponentiation</b></h3>
+
+### Modular Exponentiation
 Sliding window algorithm 14.85 from [HANDBOOK] using Barrett reduction for exponents with fewer than 2048 bits
 and Montgomery reduction for larger exponents.
-<h3><b>Inverse Modulus</b></h3>
+
+### Inverse Modulus
 If the modulus is a (not too large) power of 2, the algorithm from [KOC] section 7.
 Else, it is computed via the extended GCD algorithm.
-<h3><b>Square Root</b></h3>
+
+### Square Root
 Algorithm 1.12 (SqrtRem) from [BRENT] with algorithm 9.2.11 from [CRANDALL] as basecase.
-<h3><b>Square Root Modulo a Prime Number</b></h3>
+
+### Square Root Modulo a Prime Number<
 Algorithm 2.3.8 from [CRANDALL].
-<h3><b>Prime Number Test</b></h3>
+
+### Prime Number Test
 Miller-Rabin test.
-<h3><b>Prime Number Generation</b></h3>
+
+### Prime Number Generation
 The algorithm from Java BigInteger translated to Swift.
-<h3><b>Factorial</b></h3>
+
+### Factorial
 The 'SplitRecursive' algorithm from Peter Luschny: https://www.luschny.de
-<h3><b>Fibonacci</b></h3>
+
+### Fibonacci
 The 'fastDoubling' algorithm from Project Nayuki: https://www.nayuki.io
-<h3><b>Jacobi and Kronecker symbols</b></h3>
+
+### Jacobi and Kronecker symbols
 Algorithm 2.3.5 from [CRANDALL].
-<h3><b>Bernoulli Numbers</b></h3>
+
+### Bernoulli Numbers
 Computed via Tangent numbers which is fast because it only involves integer arithmetic
 but no fractional arithmetic.
-<h3><b>Chinese Remainder Theorem</b></h3>
+
+### Chinese Remainder Theorem
 The Garner algorithm 2.1.7 from [CRANDALL].
