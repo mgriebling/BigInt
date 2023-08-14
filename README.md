@@ -271,10 +271,10 @@ Some of the algorithms used in BigInt are described below.
  - Exact Division - Jebelean's exact division algorithm
 
 ### Greatest Common Divisor and Extended Greatest Common Divisor
-[Lehmer's algorithm][KNUTH] chapter 4.5.2, with binary GCD basecase.
+Lehmer's algorithm [KNUTH] chapter 4.5.2, with binary GCD basecase.
 
 ### Modular Exponentiation
-[Sliding window algorithm 14.85][HANDBOOK] using Barrett reduction for exponents with fewer than 2048 bits
+Sliding window algorithm 14.85 from [HANDBOOK] using Barrett reduction for exponents with fewer than 2048 bits
 and Montgomery reduction for larger exponents.
 
 ### Inverse Modulus
@@ -314,13 +314,12 @@ The Garner algorithm 2.1.7 from [CRANDALL].
 Algorithms from the following books and papers have been used in the implementation.
 There are references in the source code where appropriate.
 
-
-[BRENT]: Brent and Zimmermann: Modern Computer Arithmetic, 2010
-[BURNIKEL]: Burnikel and Ziegler: Fast Recursive Division, October 1998
-[CRANDALL]: Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005
-[GRANLUND]: Moller and Granlund: Improved Division by Invariant Integers, 2011
-[HACKER]: Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley
-[HANDBOOK]: Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996
-[JEBELEAN]: Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993
-[KNUTH]: Donald E. Knuth: Seminumerical Algorithms, Third Edition
-[KOC]: Cetin Kaya Koc: A New Algorithm for Inversion mod p^k
+  1. [BRENT]: Brent and Zimmermann: Modern Computer Arithmetic, 2010
+  2. [BURNIKEL]: Burnikel and Ziegler: Fast Recursive Division, October 1998
+  3. [CRANDALL]: Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005
+  3. [GRANLUND]: Moller and Granlund: Improved Division by Invariant Integers, 2011
+  3. [HACKER]: Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley
+  3. [HANDBOOK]: Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996
+  3. [JEBELEAN]: Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993
+  3. [KNUTH]: Donald E. Knuth: Seminumerical Algorithms, Third Edition
+  3. [KOC]: Cetin Kaya Koc: A New Algorithm for Inversion mod p^k
