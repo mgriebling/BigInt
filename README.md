@@ -168,17 +168,17 @@ but in fact it equals 3602879701896397 / 36028797018963968 = 0.10000000000000000
 BFraction values can be converted to String values, to decimal String values and to Double values.
 
 ```swift
-	  let x = BFraction(1000, 7)
-	  
-	  // To String
-	  let s1 = x.asString() // s1 = "1000 / 7"
-	  
-	  // To decimal String
-	  let s1 = x.asDecimalString(precision: 8, exponential: false) // s1 = "142.85714"
-	  let s2 = x.asDecimalString(precision: 8, exponential: true) // s2 = "1.4285714E+2"
-	  
-	  // To Double
-	  let d = x.asDouble() // d = 142.8571428571429
+  let x = BFraction(1000, 7)
+  
+  // To String
+  let s1 = x.asString() // s1 = "1000 / 7"
+  
+  // To decimal String
+  let s1 = x.asDecimalString(precision: 8, exponential: false) // s1 = "142.85714"
+  let s2 = x.asDecimalString(precision: 8, exponential: true) // s2 = "1.4285714E+2"
+  
+  // To Double
+  let d = x.asDouble() // d = 142.8571428571429
 ```
 	  
 ### Operations
@@ -254,23 +254,6 @@ would print
   CRT value: 62
 ```
 
-## References
-
-Algorithms from the following books and papers have been used in the implementation.
-There are references in the source code where appropriate.
-
-
-  1. [BRENT]: Brent and Zimmermann: Modern Computer Arithmetic, 2010
-  2. [BURNIKEL]: Burnikel and Ziegler: Fast Recursive Division, October 1998
-  3. [CRANDALL]: Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005
-  4. [GRANLUND]: Moller and Granlund: Improved Division by Invariant Integers, 2011
-  5. [HACKER]: Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley
-  6. [HANDBOOK]: Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996
-  7. [JEBELEAN]: Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993
-  8. [KNUTH]: Donald E. Knuth: Seminumerical Algorithms, Third Edition
-  9. [KOC]: Cetin Kaya Koc: A New Algorithm for Inversion mod p^k
-
-
 ## Algorithms
 Some of the algorithms used in BigInt are described below.
 
@@ -325,3 +308,19 @@ but no fractional arithmetic.
 
 ### Chinese Remainder Theorem
 The Garner algorithm 2.1.7 from [CRANDALL].
+
+## References
+
+Algorithms from the following books and papers have been used in the implementation.
+There are references in the source code where appropriate.
+
+
+  1. [BRENT]: Brent and Zimmermann: Modern Computer Arithmetic, 2010
+  2. [BURNIKEL]: Burnikel and Ziegler: Fast Recursive Division, October 1998
+  3. [CRANDALL]: Crandall and Pomerance: Prime Numbers - A Computational Perspective. Second Edition, Springer 2005
+  4. [GRANLUND]: Moller and Granlund: Improved Division by Invariant Integers, 2011
+  5. [HACKER]: Henry S. Warren, Jr.: Hacker's Delight. Second Edition, Addison-Wesley
+  6. [HANDBOOK]: Menezes, Oorschot, Vanstone: Handbook of Applied Cryptography. CRC Press 1996
+  7. [JEBELEAN]: Tudor Jebelean: An Algorithm for Exact Division. Journal of Symbolic Computation, volume 15, 1993
+  8. [KNUTH]: Donald E. Knuth: Seminumerical Algorithms, Third Edition
+  9. [KOC]: Cetin Kaya Koc: A New Algorithm for Inversion mod p^k
