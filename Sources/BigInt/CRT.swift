@@ -14,7 +14,7 @@
 ///
 /// Then use the *compute* method to compute the CRT value for a given set of residues.
 /// The same CRT instance can be used for different inputs, as long as the moduli are the same.
-public struct CRT {
+public struct CRT: Sendable {
 
     static func uc(_ m: [BInt]) -> ([BInt], [BInt]) {
         var u = [BInt](repeating: BInt.ZERO, count: m.count)

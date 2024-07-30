@@ -10,7 +10,7 @@
 /// The representation is normalized, so that numerator and denominator has no
 /// common divisors except 1. The denominator is always positive, 0 has the
 /// representation 0/1.
-public struct BFraction: CustomStringConvertible, Comparable, Equatable {
+public struct BFraction: CustomStringConvertible, Comparable, Equatable, Sendable {
     
     mutating func normalize() {
         let g = self.numerator.gcd(self.denominator)

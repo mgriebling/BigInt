@@ -59,7 +59,7 @@ infix operator ** : ExponentiationPrecedence
 ///  which works with all `BinaryIntegers`, including `BigInt`s instead of
 ///  just `Int`s or a single integer type.
 ///
-public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Codable {
+public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Codable, Sendable {
     
     // MARK: - Constants
     
