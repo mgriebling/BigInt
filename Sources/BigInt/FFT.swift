@@ -6,7 +6,7 @@
 //
 
 // Helper structure for arithmetic modulo N = 2^n + 1
-struct Fermat {
+struct Fermat: Sendable {
 
     let n: Int
     let N: Limbs

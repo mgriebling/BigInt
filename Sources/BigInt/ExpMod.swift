@@ -81,7 +81,7 @@ extension BInt {
     /*
      * Subclass for (a ** x) mod m computation for m a power of 2
      */
-    class Pow2Modulus: Modulus {
+    final class Pow2Modulus: Modulus {
         
         var limbCount = 0
         var mask: Limb = 0
@@ -114,7 +114,7 @@ extension BInt {
     /*
      * Subclass for (a ** x) mod m computation using Barrett reduction
      */
-    class BarrettModulus: Modulus {
+    final class BarrettModulus: Modulus {
         
         var u: Limbs = []
         var k1: Int = 0
@@ -176,7 +176,7 @@ extension BInt {
      *      By Henry S. Warren, Jr.
      *      July 2012
      */
-    class MontgomeryModulus: Modulus {
+    final class MontgomeryModulus: Modulus {
 
         var Rsize: Int = 0
         var Rinv: Limbs = [1]
