@@ -1,12 +1,13 @@
 # BigInt
 
 The BigInt package provides arbitrary-precision integer arithmetic in Swift.
+
 Now supports **StaticBigInt** so you can do stuff like:
 
 ```Swift
     let x = BInt(123456789012345678901234567890123456789012345678901234567890)
 ```
-String literals are now optional! Some tests now use **StaticBigInt** initalizers.
+String literals are now (mostly) unnecessary! See tests on now to use **StaticBigInt** initalizers.
 
 Its functionality falls in the following categories:
 
@@ -25,18 +26,18 @@ Its functionality falls in the following categories:
  It needs to run on macOS 13.3+, iOS 16.4+, tvOS 16.4+, watchOS 9.4+.
  BigInt has been updated to include Leif Ibsen BigInt changes up to v1.19.0.
  
-## Performance:
+ ## Performance:
 
-    - Division 2x AttaSwift
-    - Multiplication 7x AttaSwift
-    - Logic functions 2x AttaSwift
-    - Convert to String 3x AttaSwift
-    - Shifts up to 16x AttaSwift
+ * Division 2x AttaSwift
+ * Multiplication 7x AttaSwift
+ * Logic functions 2x AttaSwift
+ * Convert to String 3x AttaSwift
+ * Shifts up to 16x AttaSwift
  
  ## Protocol support
  
- - Added `SignedInteger`, `BinaryInteger`, and `Numeric` protocol compliance.
- - Support for `StaticBigInt` to allow `BigInt` number initialization
+ * Added `SignedInteger`, `BinaryInteger`, and `Numeric` protocol compliance.
+ * Support for `StaticBigInt` to allow `BigInt` number initialization
    from very large integer literals.
  
  Why support protocols? By supporting them you have the ability to
