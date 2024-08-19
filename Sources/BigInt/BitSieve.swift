@@ -9,7 +9,7 @@
 /*
  * BitSieve class from Java BigInteger translated to Swift
  */
-final class BitSieve {
+class BitSieve {
     
     var bits: [UInt64]
     let length: Int

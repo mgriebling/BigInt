@@ -254,6 +254,39 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable, Sendabl
             self.init(m * (BInt.TEN ** e), BInt.ONE)
         }
     }
+    
+    /// Constructs a BFraction from a continued fraction - `BInt` version
+    ///
+    /// - Precondition: `x` contains at least one element, all elements except possibly the first are positive
+    /// - Parameters:
+    ///   - x: The continued fraction
+    /// - Returns: The BFraction represented by `x`
+    public init(_ x: [BInt]) {
+        precondition(x.count > 0)
+        var numerator = BInt.ZERO
+        var denominator = BInt.ONE
+        for i in (1 ..< x.count).reversed() {
+            precondition(x[i].isPositive)
+            numerator += x[i] * denominator
+            (numerator, denominator) = (denominator, numerator)
+        }
+        numerator += x[0] * denominator
+        self.init(numerator, denominator)
+    }
+
+    /// Constructs a BFraction from a continued fraction - `Int` version
+    ///
+    /// - Precondition: `x` contains at least one element, all elements except possibly the first are positive
+    /// - Parameters:
+    ///   - x: The continued fraction
+    /// - Returns: The BFraction represented by `x`
+    public init(_ x: [Int]) {
+        var bx = [BInt](repeating: BInt.ZERO, count: x.count)
+        for i in 0 ..< bx.count {
+            bx[i] = BInt(x[i])
+        }
+        self.init(bx)
+    }
 
 
     // MARK: Stored properties
@@ -355,6 +388,26 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable, Sendabl
             }
         }
         return d
+    }
+    
+    ///
+    /// - Returns: `self` as a Continued Fraction
+    public func asContinuedFraction() -> [BInt] {
+        var numerator = self.numerator
+        var denominator = self.denominator
+        var (q, r) = numerator.quotientAndRemainder(dividingBy: denominator)
+        var x = [q]
+        if self.isNegative {
+            x[0] -= 1
+            numerator += (1 - x[0]) * denominator
+            r += denominator
+        }
+        while r.isNotZero {
+            (numerator, denominator) = (denominator, r)
+            (q, r) = numerator.quotientAndRemainder(dividingBy: denominator)
+            x.append(q)
+        }
+        return x
     }
 
 
@@ -459,6 +512,11 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable, Sendabl
     public prefix static func -(x: BFraction) -> BFraction {
         return BFraction(-x.numerator, x.denominator)
     }
+    
+    /// Negates `self`
+     public mutating func negate() {
+         self.numerator.negate()
+     }
     
     /// Subtraction
     ///
@@ -1176,5 +1234,36 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable, Sendabl
         }
         return x
     }
-
+    
+    // - Precondition: n > 0
+    /// - Parameters:
+    ///   - n: The number of fractions to add
+    /// - Returns: The n'th harmonic number
+    public static func harmonic(_ n: Int) -> BFraction {
+        precondition(n > 0)
+        return _harmonic(1, n)
+    }
+    
+    static func _harmonic(_ a: Int, _ b: Int) -> BFraction {
+        if a == b {
+            return BFraction(1, a)
+        }
+        let m = (a + b) >> 1
+        return _harmonic(a, m) + _harmonic(m + 1, b)
+    }
+    
+    /// Harmonic sequence: The first n harmonic numbers
+    ///
+    /// - Precondition: n > 0
+    /// - Parameters:
+    ///   - n: The number of harmonic numbers
+    /// - Returns: The harmonic numbers: H1, H2 ... Hn
+    public static func harmonicSequence(_ n: Int) -> [BFraction] {
+        precondition(n > 0)
+        var x = [BFraction](repeating: BFraction.ONE, count: n)
+        for i in 1 ..< n {
+            x[i] = x[i - 1] + BFraction(1, i + 1)
+        }
+        return x
+    }
 }

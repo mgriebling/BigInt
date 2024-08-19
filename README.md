@@ -1,30 +1,43 @@
 # BigInt
 
 The BigInt package provides arbitrary-precision integer arithmetic in Swift.
+Now supports **StaticBigInt** so you can do stuff like:
+
+```Swift
+    let x = BInt(123456789012345678901234567890123456789012345678901234567890)
+```
+String literals are now optional! Some tests now use **StaticBigInt** initalizers.
+
 Its functionality falls in the following categories:
 
- - Performance: 
+ * **Arithmetic:** add, subtract, multiply, divide, remainder and exponentiation
+ * **Comparison:** the six standard operations == != < <= > >=
+ * **Shifting:** logical left shift and rigth shift
+ * **Logical:** bitwise and, or, xor, and not
+ * **Modulo:** normal modulus, inverse modulus, and modular exponentiation
+ * **Conversion:** to double, to integer, to string, to magnitude byte array, and to 2's complement byte array
+ * **Primes:** prime number testing, probable prime number generation and primorial
+ * **Miscellaneous:** random number generation, greatest common divisor, least common multiple, n-th root, square root modulo an odd prime, Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers
+ * **Fractions:** Standard arithmetic on fractions whose numerators and denominators are of unbounded size
+ * **Chinese Remainder Theorem:** Compute the CRT value from given residues and moduli
+ 
+ BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
+ It needs to run on macOS 13.3+, iOS 16.4+, tvOS 16.4+, watchOS 9.4+.
+ BigInt has been updated to include Leif Ibsen BigInt changes up to v1.19.0.
+ 
+## Performance:
+
     - Division 2x AttaSwift
     - Multiplication 7x AttaSwift
     - Logic functions 2x AttaSwift
     - Convert to String 3x AttaSwift
     - Shifts up to 16x AttaSwift
- - Arithmetic: add, subtract, multiply, divide, remainder and exponentiation
- - Comparison: the six standard operations == != < <= > >=
- - Shifting: logical left shift and rigth shift
- - Logical: bitwise and, or, xor, and not
- - Modulo: normal modulus, inverse modulus, and modular exponentiation
- - Conversion: to double, to integer, to string, to magnitude byte array, and to 2's complement byte array
- - Primes: prime number testing, probable prime number generation and primorial
- - Miscellaneous: random number generation, greatest common divisor, least common multiple, n-th root, square root modulo an odd prime, Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers
- - Fractions: Standard arithmetic on fractions whose numerators and denominators are of unbounded size
  
  ## Protocol support
  
  - Added `SignedInteger`, `BinaryInteger`, and `Numeric` protocol compliance.
- - Optional support for `StaticBigInt` to allow `BigInt` number initialization
-   from very large integer literals. Uncomment the `BigInt-Extensions` 
-   `StaticBigInt` support.
+ - Support for `StaticBigInt` to allow `BigInt` number initialization
+   from very large integer literals.
  
  Why support protocols? By supporting them you have the ability to
  formulate generic algorithms and make use of algorithms from others
@@ -39,8 +52,6 @@ Its functionality falls in the following categories:
  
  In addition, if a third party defines extensions for the supported protocols,
  these can be easily adapted by just conforming to that protocol.
-
-BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
 
 ## Usage
 In your projects Package.swift file add a dependency like
@@ -64,6 +75,10 @@ dependencies: [
   // From string literals
   let b = BInt("123456789012345678901234567890")!
   let c = BInt("1234567890abcdef1234567890abcdef", radix: 16)!
+  
+  // From integer literals
+  let b = BInt(123456789012345678901234567890)
+  let c = BInt(0x1234567890abcdef1234567890abcdef)
   
   // From magnitude and sign
   let m: Limbs = [1, 2, 3]

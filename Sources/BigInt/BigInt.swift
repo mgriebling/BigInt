@@ -10,11 +10,13 @@ import Foundation
 
 /// Unsigned 8 bit value
 public typealias Byte = UInt8
+
 /// Array of unsigned 8 bit values
 public typealias Bytes = [UInt8]
 
 /// Unsigned 64 bit value
 public typealias Limb = UInt
+
 /// Array of unsigned 64 bit values
 public typealias Limbs = [UInt]
 
@@ -95,7 +97,6 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     ///   - words: unsigned value array
     ///   - isNegative: *true* means negative value, *false* means 0 or positive value, default is *false*
     public init(_ words: Limbs, _ isNegative : Bool = false) {
-        precondition(Limb.bitWidth == 64, "64-bit UInt REQUIRED!")
         self.words = words
         self.words.normalize()
         self.isNegative = isNegative
@@ -107,6 +108,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     /// Constructs a BInt from an Int value
     ///
     /// - Parameter x: Int value
+    /// - Returns: THe BInt with value *x*
     public init(_ x: Int) {
         if x == Int.min {
             self.init([0x8000000000000000], true)
@@ -138,15 +140,17 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     
     /// Constructs a BInt from a String value and radix
     ///
+    /// Examples:
+    ///    * BInt("34111220000000000475892058")
+    ///    * BInt("90abcdef", radix = 16)
+    ///    * BInt("111110010", radix = 2)
+    ///    * BInt("1cdefghijk44", radix = 26)
+    ///
     /// - Parameters:
     ///   - x: String value to be converted
     ///   - radix: Radix of x, from 2 to 36 inclusive, default is 10
     ///   Returns: The BInt corresponding to *x*, *nil* if *x* does not designate an integer in the given radix
     ///
-    /// Examples:
-    ///    * BInt("90abcdef", radix = 16)
-    ///    * BInt("111110010", radix = 2)
-    ///    * BInt("1cdefghijk44", radix = 26)
     public init?(_ x: String, radix: Int = 10) {
         if radix < 2 || radix > 36 {
             return nil
@@ -207,6 +211,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     ///
     /// - Precondition: bitWidth is positive
     /// - Parameter bitWidth: Number of bits
+    /// - Returns: A uniformly distributed random BInt in range 0 ..< 2 ^ `bitWidth`
     public init(bitWidth: Int) {
         precondition(bitWidth > 0, "Bitwidth must be positive")
         let (q, r) = bitWidth.quotientAndRemainder(dividingBy: 64)
@@ -1032,8 +1037,8 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     public func quotientAndRemainder(dividingBy x: BInt) -> (quotient: BInt, remainder: BInt) {
         var quotient = BInt.ZERO
         var remainder = BInt.ZERO
-        if x.words.count > BInt.BZ_DIV_LIMIT && self.words.count > x.words.count + BInt.BZ_DIV_LIMIT {
-            (quotient, remainder) = self.bzDivMod(x)
+        if x.words.count > Limbs.BZ_DIV_LIMIT && self.words.count > x.words.count + Limbs.BZ_DIV_LIMIT {
+            (quotient.words, remainder.words) = self.words.bzDivMod(x.words)
         } else {
             (quotient.words, remainder.words) = self.words.divMod(x.words)
         }
@@ -1245,7 +1250,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
             return BInt.ZERO
         }
         let tb = m.trailingZeroBitCount
-        if tb <= 1024 && tb + m.leadingZeroBitCount == m.words.count << 6 - 1 {
+        if tb <= 1024 && (m >> tb).isOne {
             
             precondition(self.isOdd, "No inverse modulus")
             
@@ -1282,7 +1287,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
             return 0
         }
         let tb = m.trailingZeroBitCount
-        if tb + m.leadingZeroBitCount == 63 {
+        if m >> tb == 1 {
             
             precondition(self.isOdd, "No inverse modulus")
             
@@ -1916,7 +1921,8 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     /// - Returns: The product of primes less than or equal to n
     public static func primorial(_ n: Int) -> BInt {
         precondition(n >= 0, "negative primorial")
-        var p = BInt.ONE
+        let p = BInt.ONE
+        if n == 0 { return BInt.ONE }
         if n > 0 {
             var sieve = [Bool](repeating: true, count: n + 1)
             sieve[0] = false
@@ -1930,13 +1936,24 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
                 }
                 ndx += 1
             }
-            for i in 0 ... n {
+            return _primorial(1, n, sieve)
+        }
+        return p
+    }
+    
+    
+    static func _primorial(_ from: Int, _ to: Int, _ sieve: [Bool]) -> BInt {
+        if to - from < 10000 {
+            var p = BInt.ONE
+            for i in from ... to {
                 if sieve[i] {
                     p *= i
                 }
             }
+            return p
         }
-        return p
+        let m = (from + to) >> 1
+        return _primorial(from, m, sieve) * _primorial(m + 1, to, sieve)
     }
     
     
@@ -2332,159 +2349,50 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
         return (BInt(a), BInt(b))
     }
 
-    /*
-     * Lehmer's gcd algorithm
-     * [KNUTH] - chapter 4.5.2, algorithm L
-     */
-    // Leave one bit for the sign and one for a possible overflow
-    static let B62 = BInt.ONE << 62
+    /// Greatest common divisor - BInt version
+      ///
+      /// - Parameter x: Operand
+      /// - Returns: Greatest common divisor of `self` and x
+      public func gcd(_ x: BInt) -> BInt {
+          if self.words.count > BInt.RECURSIVE_GCD_LIMIT && x.words.count > BInt.RECURSIVE_GCD_LIMIT {
+              return self.recursiveGCD(x)
+          } else {
+              return self.lehmerGCD(x)
+          }
+      }
 
-    /// Greatest common divisor
-    ///
-    /// - Parameter x: Operand
-    /// - Returns: Greatest common divisor of *self* and x
-    public func gcd(_ x: BInt) -> BInt {
-        var u: BInt
-        var v: BInt
-        let selfabs = self.abs
-        let xabs = x.abs
-        if selfabs < xabs {
-            u = xabs
-            v = selfabs
-        } else {
-            u = selfabs
-            v = xabs
-        }
-        while v >= BInt.B62 {
-            let size = u.bitWidth - 62
-            var x = (u >> size).asInt()!
-            var y = (v >> size).asInt()!
-            var A = 1
-            var B = 0
-            var C = 0
-            var D = 1
-            while true {
-                let yC = y + C
-                let yD = y + D
-                if yC == 0 || yD == 0 {
-                    break
-                }
-                let q = (x + A) / yC
-                if q != (x + B) / yD {
-                    break
-                }
-                (A, B, x, C, D, y) = (C, D, y, A - q * C, B - q * D, x - q * y)
-            }
-            if B == 0 {
-                (u, v) = (v, u.mod(v))
-            } else {
-                (u, v) = (A * u + B * v, C * u + D * v)
-            }
-        }
-        if v.isZero {
-            return u
-        }
-        if u.words.count > 1 {
-            let r = u.quotientAndRemainder(dividingBy: v).remainder
-            u = v
-            v = r
-            if v.isZero {
-                return u
-            }
-        }
-        // u and v are one-limb values
-        assert(u < BInt.ONE << 64)
-        assert(v < BInt.ONE << 64)
-        return BInt([Limbs.binaryGcd(u.words[0], v.words[0])])
-     }
+      /// Greatest common divisor - Int version
+      ///
+      /// - Parameter x: Operand
+      /// - Returns: Greatest common divisor of `self` and x
+      public func gcd(_ x: Int) -> BInt {
+          return self.lehmerGCD(BInt(x))
+      }
 
-    /*
-     * Lehmer's gcd algorithm
-     * [KNUTH] - chapter 4.5.2, algorithm L - exercise 18
-     */
-    /// Extended greatest common divisor
-    ///
-    /// - Parameter x: Operand
-    /// - Returns: Greatest common divisor *g* of *self* and *x*, and *a* and *b* such that *a* \* *self* + *b* \* *x* = *g*
-    public func gcdExtended(_ x: BInt) -> (g: BInt, a: BInt, b: BInt) {
-        let selfabs = self.abs
-        let xabs = x.abs
-        if self.isZero {
-            return (xabs, BInt.ZERO, x.isNegative ? -BInt.ONE : BInt.ONE)
-        }
-        if x.isZero {
-            return (selfabs, self.isNegative ? -BInt.ONE : BInt.ONE, BInt.ZERO)
-        }
-        var u: BInt
-        var v: BInt
-        var u2 = BInt.ZERO
-        var v2 = BInt.ONE
-        if selfabs < xabs {
-            u = xabs
-            v = selfabs
-        } else {
-            u = selfabs
-            v = xabs
-        }
-        var u3 = u
-        var v3 = v
-        while v >= BInt.B62 {
-            let size = u.bitWidth - 62
-            var x = (u >> size).asInt()!
-            var y = (v >> size).asInt()!
-            var A = 1
-            var B = 0
-            var C = 0
-            var D = 1
-            while true {
-                let yC = y + C
-                let yD = y + D
-                if yC == 0 || yD == 0 {
-                    break
-                }
-                let q = (x + A) / yC
-                if q != (x + B) / yD {
-                    break
-                }
-                (A, B, x, C, D, y) = (C, D, y, A - q * C, B - q * D, x - q * y)
-            }
-            if B == 0 {
-                (u, v) = (v, u.mod(v))
-                let q = u3 / v3
-                (u2, v2) = (v2, u2 - q * v2)
-                (u3, v3) = (v3, u3 - q * v3)
-            } else {
-                (u, v) = (A * u + B * v, C * u + D * v)
-                (u2, v2) = (A * u2 + B * v2, C * u2 + D * v2)
-                (u3, v3) = (A * u3 + B * v3, C * u3 + D * v3)
-            }
-        }
-        while v3.isNotZero {
-            let q = u3 / v3
-            (u2, v2) = (v2, u2 - v2 * q)
-            (u3, v3) = (v3, u3 - v3 * q)
-        }
-        
-        var u1: BInt
-        if selfabs < xabs {
-            // u3 = u2 * selfabs + u1 * xabs
-            u1 = (u3 - u2 * selfabs) / xabs
-            (u1, u2) = (u2, u1)
-        } else {
-            // u3 = u1 * selfabs + u2 * xabs
-            u1 = (u3 - u2 * xabs) / selfabs
-        }
-        
-        // Fix the signs
+      /*
+       * Lehmer's gcd algorithm
+       * [KNUTH] - chapter 4.5.2, algorithm L - exercise 18
+       */
+      /// Extended greatest common divisor - BInt version
+      ///
+      /// - Parameter x: Operand
+      /// - Returns: Greatest common divisor `g` of `self` and `x`, and `a` and `b` such that `a` \* `self` + `b` \* `x` = `g`
+      public func gcdExtended(_ x: BInt) -> (g: BInt, a: BInt, b: BInt) {
+          if self.words.count > BInt.RECURSIVE_GCD_EXT_LIMIT && x.words.count > BInt.RECURSIVE_GCD_EXT_LIMIT {
+              return self.recursiveGCDext(x)
+          } else {
+              return self.lehmerGCDext(x)
+          }
+      }
 
-        if x.isNegative {
-            u2 = -u2
-        }
-        if self.isNegative {
-            u1 = -u1
-        }
-        return (u3, u1, u2)
-    }
+      /// Extended greatest common divisor - Int version
+      ///
+      /// - Parameter x: Operand
+      /// - Returns: Greatest common divisor `g` of `self` and `x`, and `a` and `b` such that `a` \* `self` + `b` \* `x` = `g`
+      public func gcdExtended(_ x: Int) -> (g: BInt, a: BInt, b: BInt) {
+          return self.lehmerGCDext(BInt(x))
+      }
+
 
     /*
      * [CRANDALL] - algorithm 2.3.5
@@ -2604,6 +2512,14 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
     public func lcm(_ x: BInt) -> BInt {
         return self.isZero || x.isZero ? BInt.ZERO : (self * x).abs.quotientExact(dividingBy: self.gcd(x))
     }
+    
+    /// Least common multiple - Int version
+      ///
+      /// - Parameter x: Operand
+      /// - Returns: Least common multiple of `self` and `x` - a non-negative number
+      public func lcm(_ x: Int) -> BInt {
+          return self.isZero || x == 0 ? BInt.ZERO : (self * x).abs.quotientExact(dividingBy: self.lehmerGCD(BInt(x)))
+      }
 
     /// n'th Lucas number
     ///
@@ -2637,5 +2553,25 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable, Co
         } while x >= self
         return x
     }
+    
+    /// Random value
+     ///
+     /// - Precondition: *x* < `self`
+     /// - Parameter x: Lower bound smaller than `self`
+     /// - Returns: A uniformly distributed  random value in range *x* ..< `self`
+     public func randomFrom(_ x: BInt) -> BInt {
+         precondition(x < self, "Too large")
+         return (self - x).randomLessThan() + x
+     }
+
+     /// Random value
+     ///
+     /// - Precondition: `self` < *x*
+     /// - Parameter x: Upper bound larger than `self`
+     /// - Returns: A uniformly distributed random value in range `self` ..< *x*
+     public func randomTo(_ x: BInt) -> BInt {
+         precondition(self < x, "Too small")
+         return (x - self).randomLessThan() + self
+     }
 
 }

@@ -152,7 +152,7 @@ class BitTest: XCTestCase {
 
     func test8() {
         XCTAssertEqual(BInt.ZERO.population, 0)
-        let x = BInt("ffffffffffffffff", radix: 16)!
+        let x = BInt(0xffffffffffffffff)
         for i in 0 ..< 100 {
             XCTAssertEqual((BInt.ONE << i).population, 1)
             XCTAssertEqual((x << i).population, 64)

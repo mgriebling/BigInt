@@ -33,10 +33,6 @@
 extension BInt : SignedInteger {
     public static var isSigned: Bool { true }
     
-    public init(integerLiteral value: Int) {
-        self.init(value)
-    }
-    
     public init<T>(_ source: T) where T : BinaryInteger {
         if let int = BInt(exactly: source) {
             self = int
@@ -90,6 +86,9 @@ extension BInt : Numeric {
 }
 
 extension BInt : BinaryInteger {
+    
+    public typealias Words = [UInt]
+    
     public static func <<= <RHS:BinaryInteger>(lhs: inout BInt, rhs: RHS) {
         lhs = lhs << Int(rhs)
     }
@@ -99,28 +98,24 @@ extension BInt : BinaryInteger {
     }
 }
 
-/// Add support for `StaticBigInt` - 24 Jun 2023 - MG
-/// Currently disabled due to Swift Playground incompatiblity
-/// Uncomment to enable `StaticBigInt` support (i.e., huge integer literals).
-//@available(macOS 13.3, *)
-//extension BInt : ExpressibleByIntegerLiteral {
-//    public init(integerLiteral value: StaticBigInt) {
-//        let isNegative = value.signum() < 0
-//        let bitWidth = value.bitWidth
-//        if bitWidth < Int.bitWidth {
-//            self.init(Int(bitPattern: value[0]))
-//        } else {
-//            precondition(value[0].bitWidth == 64, "Requires 64-bit Ints!")
-//            let noOfWords = (bitWidth / 64) + 1 // must be 64-bit system
-//            var words = Limbs()
-//            for index in 0..<noOfWords {
-//                // StaticBigInt words are 2's complement so negative
-//                // values needed to be inverted and have one added
-//                if isNegative { words.append(UInt64(~value[index])) }
-//                else { words.append(UInt64(value[index])) }
-//            }
-//            self.init(words, false)
-//            if isNegative { self += 1; self.negate() }
-//        }
-//    }
-//}
+extension BInt : ExpressibleByIntegerLiteral {
+    public init(integerLiteral value: StaticBigInt) {
+        let isNegative = value.signum() < 0
+        let bitWidth = value.bitWidth
+        if bitWidth < Int.bitWidth {
+            self.init(Int(bitPattern: value[0]))
+        } else {
+            precondition(value[0].bitWidth == 64, "Requires 64-bit Ints!")
+            let noOfWords = (bitWidth / 64) + 1 // must be 64-bit system
+            var words = Limbs()
+            for index in 0..<noOfWords {
+                // StaticBigInt words are 2's complement so negative
+                // values needed to be inverted and have one added
+                if isNegative { words.append(~value[index]) }
+                else { words.append(value[index]) }
+            }
+            self.init(words, false)
+            if isNegative { self += 1; self.negate() }
+        }
+    }
+}
