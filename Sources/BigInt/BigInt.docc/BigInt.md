@@ -30,13 +30,17 @@ The BigInt package provides arbitrary-precision integer and fraction arithmetic 
 
     Please, see <doc:AboutCRT>
 
+* **Protocol Support**
+
+    Please, see <doc:Protocols>
+
 ### Usage
 
 To use BigInt, in your project Package.swift file add a dependency like
 
 ```swift
 dependencies: [
-  package(url: "https://github.com/leif-ibsen/BigInt", from: "1.19.0"),
+  package(url: "https://github.com/mgriebling/BigInt.git", from: "2.2.0"),
 ]
 ```
 
@@ -68,3 +72,4 @@ BigInt requires Swift 5.0. It also requires that the `Int` and `UInt` types be 6
 - <doc:Performance>
 - <doc:References>
 - <doc:Algorithms>
+- <doc:Protocols>

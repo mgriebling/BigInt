@@ -3,32 +3,6 @@
 //
 //  Created by Mike Griebling on 13.07.2023.
 //
-///  Added `SignedInteger`, `BinaryInteger`, and `Numeric` protocol compliance.
-///  Optional support for `StaticBigInt`.  Note: These extensions require
-///  renaming `magnitude` to `words` to avoid conflict with the
-///  `Numeric` protocol variable also called `magnitude`.
-///
-///  Why support protocols? By supporting them you have the ability to
-///  formulate generic algorithms and make use of algorithms from others
-///  that use the protocol type(s) you support. For example, `Strideable`
-///  compliance is free (with `BinaryInteger`) and lets you do things like
-///
-///  ```swift
-///  for i in BInt(1)...10 {
-///     print(i.words)
-///  }
-///  ```
-///
-///  The main header also
-///  includes `Codable` compliance conformity (for free).  `Codable`
-///  compliance allows `BInt`s to be distributed/received or stored/read as
-///  JSONs.
-///
-///  Protocols mean you can support generic arguments:
-///  (e.g., `func * <T:BinaryInteger>(_ lhs: Self, rhs: T) -> Self`)
-///  which works with all `BinaryIntegers`, including `BigInt`s instead of
-///  just `Int`s or a single integer type.
-///
 
 extension BInt : SignedInteger {
     public static var isSigned: Bool { true }
