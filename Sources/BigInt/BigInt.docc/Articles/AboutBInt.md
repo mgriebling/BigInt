@@ -6,18 +6,23 @@ Signed integers of unbounded size
 
 ``BInt`` values are represented with magnitude and sign:
 
-* The magnitude is an array of unsigned 64 bit integers (a.k.a. Limbs)
+* The magnitude is an array of unsigned 64-bit integers (a.k.a. Limbs)
 * The sign is a boolean value, `true` means value < 0, `false` means value >= 0
 * The representation is little-endian, least significant Limb has index 0
-* The representation is minimal, there is no leading zero Limbs. The exception is that the value 0 is represented as a single 64 bit zero Limb and sign `false`
+* The representation is minimal, there is no leading zero Limbs. The exception is 
+  that the value 0 is represented as a single 64-bit zero Limb and a `false` sign.
 
 ### Creating BInt's
 
 ```swift
-// From an integer
+// From an integer (unlimited size)
 let a = BInt(27)
+let z = BInt(12_345_678_901_234_567_890_123_456_789_012_345_678_901_234_567_890_123_456_789)
+let y = BInt(0x1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0)
+let v = BInt(0o123_456_701_123_456_701_123_456_701_123_456_701_123_456_701_123_456_701)
+let w = BInt(0b10010101_01010101_01010101_01010010_10101000_01010111_11100101_01010101_01001010_10101010)
 
-// From a decimal value
+// From a floating point value
 let x = BInt(1.12345e30) // x = 1123450000000000064996914495488
 
 // From string literals

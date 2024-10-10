@@ -19,7 +19,7 @@ Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacc
 * **Fractions:** Standard arithmetic on fractions whose numerators and denominators are of unbounded size
 * **Chinese Remainder Theorem:** Compute the CRT value from given residues and moduli
 
-BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
+BigInt requires Swift 5.0. It also requires that the Int and UInt types be 64-bit types.
 BigInt has been updated to include Leif Ibsen's changes up to v1.19.0.
 
 Its documentation is built with the DocC plugin and published on GitHub Pages at this location:
@@ -40,7 +40,7 @@ The documentation is also available in the *BigInt.doccarchive* file.
 > It is emphasized that it is only the documentation that's in error.
 > The operators themselves work correctly.
 
-From now on, this BigInt will mirror Ibsen's BigInt changes (more or less) and have addendum files
+From now on, the BigInt variant will mirror Ibsen's BigInt changes (more or less) and have addendum files
 like *BigInt-Extensions.swift* to implement the Apple-centric protocol compliance.
 
 Two changes were required in the original source to support BinaryInteger

@@ -1,12 +1,12 @@
 
 # Protocols and Additions
 
-BigInt supports Apple's `SignedInteger`, `BinaryInteger`, `Codable`, and `Numeric` protocols.
+BigInt supports the standard integer data type's SignedInteger, BinaryInteger, Codable, and Numeric protocols.
 
-BigInt (with protocols) now includes support for `StaticBigInt` number initialization
-with macOS 13.3+, iOS 16.4+, tvOS 16.4+, watchOS 9.4+, macCatalyst("13.0")
-Note: These extensions require renaming `magnitude` to `_magnitude` to avoid conflict with the
-`Numeric` protocol variable also called `magnitude`.
+BigInt (with protocols) now includes support for StaticBigInt number initialization
+with macOS 13.3+, iOS 16.4+, tvOS 16.4+, watchOS 9.4+, macCatalyst 13.0+.
+Note: These extensions required renaming `magnitude` to `_magnitude` to avoid conflict with the
+Numeric protocol variable also called `magnitude`.
 
 Why support protocols? By supporting them you gain the ability to
 formulate generic algorithms and make use of algorithms from others
@@ -19,7 +19,7 @@ for i in BInt(1)...10 {
 }
 ```
 
-The main header also
+The BigInt struct also
 includes `Codable` compliance conformity (for free). Codable
 compliance allows BInts to be distributed/received or stored/read as
 industry-standard JSONs.

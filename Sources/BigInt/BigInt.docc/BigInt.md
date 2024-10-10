@@ -6,12 +6,14 @@ Signed integers and fractions of unbounded size
 
 > Important:
 **Please note:** Due to a bug in the DocC plugin that generated this documentation,
-> clicking on certain `BInt` and `BFraction` operators in GitHub Pages (f.ex. < and | ) will show the message
+> clicking on certain `BInt` and `BFraction` operators in GitHub Pages (e.g., `<` and `|` ) will show the message
 >
+>   ```
 >    The page you're looking for can't be found.
+>   ```
 >   
 > The *BigInt.doccarchive* file contains the correct documentation.
-> It is emphasized that it is only the documentation that's in error.
+> It is emphasized that it is *only* the documentation that's in error.
 > The operators themselves work correctly.
 
 ## Overview
@@ -30,7 +32,7 @@ The BigInt package provides arbitrary-precision integer and fraction arithmetic 
 
     Please, see <doc:AboutCRT>
 
-* **Protocol Support**
+* **Protocol and Extension Support**
 
     Please, see <doc:Protocols>
 
