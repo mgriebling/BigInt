@@ -28,7 +28,7 @@ precedencegroup ExponentiationPrecedence {
 
 infix operator ** : ExponentiationPrecedence
 
-public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Hashable {
+public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equatable, Hashable {
     
     // MARK: - Constants
     

@@ -5,7 +5,7 @@
 //  Created by Leif Ibsen on 26/06/2022.
 //
 
-public struct BFraction: CustomStringConvertible, Comparable, Equatable {
+public struct BFraction: CustomStringConvertible, Comparable, Codable, Sendable, Equatable {
     
     mutating func normalize() {
         let g = self.numerator.gcd(self.denominator)
