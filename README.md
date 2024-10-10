@@ -14,7 +14,7 @@ Its functionality falls in the following categories:
 * **Conversion:** to/from double, to/from integer, to/from string, to/from a magnitude 
     byte array, and to/from a 2's complement byte array
 * **Primes:** prime number testing, probable prime number generation and primorial
-* **Miscellaneous:** random number generation, n-th root, square root modulo an odd prime,
+* **Miscellaneous:** random number generation, n-th root, square root modulo and odd prime,
 Jacobi symbol, Kronecker symbol, Factorial function, Binomial function, Fibonacci numbers, Lucas numbers and Bernoulli numbers
 * **Fractions:** Standard arithmetic on fractions whose numerators and denominators are of unbounded size
 * **Chinese Remainder Theorem:** Compute the CRT value from given residues and moduli
@@ -26,17 +26,27 @@ Its documentation is built with the DocC plugin and published on GitHub Pages at
 
 https://mgriebling.github.io/BigInt/documentation/bigint
 
-The documentation is also available in the BigInt.doccarchive file.
+The documentation is also available in the *BigInt.doccarchive* file.
+
+**Please note:** Due to a bug in the DocC plugin, clicking on certain `BInt` and `BFraction` operators
+in GitHub Pages (e.g., `<` and `|` ) will show the message
+
+    The page you're looking for can't be found.
+    
+The *BigInt.doccarchive* file contains the correct documentation.
+
+It is emphasized that it is only the documentation that's in error.
+The operators themselves work correctly.
 
 From now on, this BigInt will mirror Ibsen's BigInt changes (more or less) and have addendum files
-like `BigInt-Extensions.swift` to implement the Apple-centric protocol compliance.
+like *BigInt-Extensions.swift* to implement the Apple-centric protocol compliance.
 
-Two changes were required in the original source to support `BinaryInteger`
+Two changes were required in the original source to support BinaryInteger
 compliance:
 
-1) Rename  `mantissa` to `_mantissa` to avoid conflict with the protocol-required 
+1) Renamed  `mantissa` to `_mantissa` to avoid conflict with the protocol-required 
 `mantissa`variable.
-2) Add the `Codable` protocol to the BigInt struct definition. This is a `free`
+2) Added the Codable protocol to the BigInt struct definition. This is a *free*
 addition that doesn't require any additional code. Benefits include being able
 to read and write JSON files containing BigInts.
 

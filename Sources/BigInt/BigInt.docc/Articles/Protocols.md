@@ -1,9 +1,10 @@
 
-# Protocols
+# Protocols and Additions
 
 BigInt supports Apple's `SignedInteger`, `BinaryInteger`, `Codable`, and `Numeric` protocols.
 
-It now includes support for `StaticBigInt` number initialization.  
+BigInt (with protocols) now includes support for `StaticBigInt` number initialization
+with macOS 13.3+, iOS 16.4+, tvOS 16.4+, watchOS 9.4+, macCatalyst("13.0")
 Note: These extensions require renaming `magnitude` to `_magnitude` to avoid conflict with the
 `Numeric` protocol variable also called `magnitude`.
 
@@ -19,42 +20,37 @@ for i in BInt(1)...10 {
 ```
 
 The main header also
-includes `Codable` compliance conformity (for free).  `Codable`
-compliance allows `BInt`s to be distributed/received or stored/read as
-JSONs instead of bunches of bytes that are inherently non-portable.
+includes `Codable` compliance conformity (for free). Codable
+compliance allows BInts to be distributed/received or stored/read as
+industry-standard JSONs.
 
 Protocols mean you can support generic arguments:
 (e.g., `func * <T:BinaryInteger>(_ lhs: Self, rhs: T) -> Self`)
-which works with all `BinaryIntegers`, including `BigInt`s instead of
-just `Int`s or a single integer type.
+which works with *all* `BinaryIntegers`, including BigInt's instead of
+just Ints or a single integer type. 
 
-Finally, protocol support allows simplified extensions to the `BigDecimal`
+Additionally, with support for StaticBigInt, initialization can now
+use unlimited precision instead of requiring quoted numbers:
+
+```swift
+let huge = BInt(12_345_678_901_234_567_890_123_456_789_012_345_678_901_234_567_890_123_456_789)
+let hugeHex = BInt(0x1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0)
+let hugeOctal = BInt(0o123_456_701_123_456_701_123_456_701_123_456_701_123_456_701_123_456_701)
+let hugeBinary = BInt(0b10010101_01010101_01010101_01010010_10101000_01010111_11100101_01010101_01001010_10101010)
+print(huge, "0x"+hugeHex.asString(radix: 16, uppercase: true), "0o"+hugeOctal.asString(radix: 8), 
+        "0b"+hugeBinary.asString(radix: 2))
+```
+produces:
+
+```
+12345678901234567890123456789012345678901234567890123456789 
+0x123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0 
+0o123456701123456701123456701123456701123456701123456701 
+0b10010101010101010101010101010010101010000101011111100101010101010100101010101010
+```
+
+Finally, protocol support allows simplified extensions to the BigDecimal
 package available [here](https://github.com/mgriebling/BigDecimal.git).
-It contains a complete arbitrary precision Decimal number implementation.
+It contains a complete arbitrary-precision Decimal number implementation
+with support for standard 32-, 64-, and 128-bit decimal number formats.
 
-Its functionality falls in the following categories:
-- Arithmetic: addition, subtraction, multiplication, division, remainder and 
-  exponentiation
-- Added arbitrary complex decimal number support with the `CBDecimal` type using
-  `swift-numerics`.
-- Compliant with `DecimalFloatingPoint` and `Real` protocols.
-- Constants: `pi`, `zero`, `one`, `ten`
-- Functions: exp, log, log10, log2, pow, sqrt, root, factorial, gamma, 
-             trig + inverse, hyperbolic + inverse
-- Rounding and scaling according to one of the rounding modes:
-    - awayFromZero
-    - down
-    - towardZero
-    - toNearestOrEven
-    - toNearestOrAwayFromZero
-    - up
-
-- Comparison: the six standard operators `==`, `!=`, `<`, `<=`, `>`, and `>=`
-- Conversion: to String, to Double, to Decimal (the Swift Foundation type), to 
-  Decimal32 / Decimal64 / Decimal128
-- Support for Decimal32, Decimal64 and Decimal128 values stored as UInt32, 
-  UInt64 and UInt128 values respectively, using Densely Packed Decimal (DPD) 
-  encoding or Binary Integer Decimal (BID) encoding
-- Support for Decimal32, Decimal64 and Decimal128 mathematical operations
-- Supports the IEEE 754 concepts of Infinity and NaN (Not a Number) with the
-  latter having a `signaling` option.

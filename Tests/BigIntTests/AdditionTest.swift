@@ -19,6 +19,12 @@ class AdditionTest: XCTestCase {
     }
 
     func test1() {
+//        let huge = BInt(12_345_678_901_234_567_890_123_456_789_012_345_678_901_234_567_890_123_456_789)
+//        let hugeHex = BInt(0x1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0)
+//        let hugeOctal = BInt(0o123_456_701_123_456_701_123_456_701_123_456_701_123_456_701_123_456_701)
+//        let hugeBinary = BInt(0b10010101_01010101_01010101_01010010_10101000_01010111_11100101_01010101_01001010_10101010)
+//        print(huge, "0x"+hugeHex.asString(radix: 16, uppercase: true), "0o"+hugeOctal.asString(radix: 8), "0b"+hugeBinary.asString(radix: 2))
+        
         XCTAssertEqual(BInt(7) + BInt(4), BInt(11))
         XCTAssertEqual(BInt(7) + BInt(-4), BInt(3))
         XCTAssertEqual(BInt(-7) + BInt(4), BInt(-3))
