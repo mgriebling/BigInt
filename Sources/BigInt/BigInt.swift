@@ -58,7 +58,7 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
     
     // MARK: - Initializers
     
-    /// Constructs a BInt from magnitude and sign
+    /// Constructs a BInt from magnitude and sign.
     ///
     /// - Parameters:
     ///   - magnitude: magnitude of value
@@ -75,7 +75,6 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
     /// Constructs a BInt from an Int value
     ///
     /// - Parameter x: Int value
-    /// - Returns: The BInt with value `x`
     public init(_ x: Int) {
         if x == Int.min {
             self.init([0x8000000000000000], true)
@@ -86,11 +85,11 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
         }
     }
     
-    /// Constructs a BInt from a decimal value
+    /// Constructs a BInt from a Double value where *d* is truncated
+    /// to an integer value and aborts if *d* is infinite or NaN.
     ///
     /// - Parameters:
     ///   - d: The decimal value
-    /// - Returns: The BInt corresponding to `d` truncated to an integer value, `nil` if `d` is infinite or NaN
     public init?(_ d: Double) {
         if d.isNaN || d.isInfinite {
             return nil
@@ -105,7 +104,8 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
         }
     }
     
-    /// Constructs a BInt from a String value and radix
+    /// Constructs a BInt from a String value and radix and aborts
+    ///  if *x* does not designate an integer in the given radix.
     ///
     /// Examples:
     ///    * BInt("34111220000000000475892058")
@@ -116,7 +116,6 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
     /// - Parameters:
     ///   - x: String value to be converted
     ///   - radix: Radix of x, from 2 to 36 inclusive, default is 10
-    /// - Returns: The BInt corresponding to `x`, `nil` if `x` does not designate an integer in the given radix
     public init?(_ x: String, radix: Int = 10) {
         if radix < 2 || radix > 36 {
             return nil
@@ -173,11 +172,11 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Equatable, Has
         self.init(magnitude, sign)
     }
 
-    /// Constructs a random BInt with a specified number of bits
+    /// Constructs a uniformly distributed random BInt with a specified
+    /// number of bits in the range 0 `..<` 2 ^ *bitWidth*.
     ///
     /// - Precondition: bitWidth is positive
     /// - Parameter bitWidth: Number of bits
-    /// - Returns: A uniformly distributed random BInt in range 0 ..< 2 ^ `bitWidth`
     public init(bitWidth: Int) {
         precondition(bitWidth > 0, "Bitwidth must be positive")
         let (q, r) = bitWidth.quotientAndRemainder(dividingBy: 64)

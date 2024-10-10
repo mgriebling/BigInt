@@ -27,11 +27,10 @@ public struct CRT {
 
     // MARK: - Initializers
 
-    /// Constructs a CRT instance from the moduli - `BInt` version
+    /// Constructs a CRT instance from the moduli and aborts if conditions are not met - `BInt` version
     ///
     /// - Parameters:
     ///   - m: The moduli
-    /// - Returns: The CRT instance for the moduli, `nil` if they do not fullfill the conditions
     public init?(_ m: [BInt]) {
         guard m.count > 1 else {
             return nil
@@ -51,11 +50,10 @@ public struct CRT {
         self.M = self.u[self.u.count - 1] * self.m[self.m.count - 1]
     }
     
-    /// Constructs a CRT instance from the moduli - `Int` version
+    /// Constructs a CRT instance from the moduli and aborts if conditions are not met - `Int` version
     ///
     /// - Parameters:
     ///   - m: The moduli
-    /// - Returns: The CRT instance for the moduli, `nil` if they do not fullfill the conditions
     public init?(_ m: [Int]) {
         var x = [BInt](repeating: BInt.ZERO, count: m.count)
         for i in 0 ..< m.count {

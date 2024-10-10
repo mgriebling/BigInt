@@ -28,15 +28,17 @@ https://mgriebling.github.io/BigInt/documentation/bigint
 
 The documentation is also available in the *BigInt.doccarchive* file.
 
-**Please note:** Due to a bug in the DocC plugin, clicking on certain `BInt` and `BFraction` operators
-in GitHub Pages (e.g., `<` and `|` ) will show the message
-
-    The page you're looking for can't be found.
-    
-The *BigInt.doccarchive* file contains the correct documentation.
-
-It is emphasized that it is only the documentation that's in error.
-The operators themselves work correctly.
+> Important:
+**Please note:** Due to a bug in the DocC plugin that generated this documentation,
+> clicking on certain `BInt` and `BFraction` operators in GitHub Pages (e.g., `<` and `|` ) will show the message
+>
+> ```
+>    The page you're looking for can't be found.
+> ```
+>
+> The *BigInt.doccarchive* file contains the correct documentation.
+> It is emphasized that it is only the documentation that's in error.
+> The operators themselves work correctly.
 
 From now on, this BigInt will mirror Ibsen's BigInt changes (more or less) and have addendum files
 like *BigInt-Extensions.swift* to implement the Apple-centric protocol compliance.

@@ -152,9 +152,9 @@ Please, see <doc:AboutBInt>
 ### Shift Operations
 
 - ``<<(_:_:)``
-- ``<<=(_:_:)``
+- ``<<=(_:_:)-9gfzo``
 - ``>>(_:_:)``
-- ``>>=(_:_:)``
+- ``>>=(_:_:)-40hci``
 
 ### Bit Operations
 

@@ -6,6 +6,7 @@ import PackageDescription
 let package = Package(
     name: "BigInt",
     platforms: [
+        // required to support StaticBigInt - wish there were a way to fallback to Int
         .macOS("13.3"), .iOS("16.4"), .tvOS("16.4"), .watchOS("9.4"),
         .macCatalyst("13.0")
     ],

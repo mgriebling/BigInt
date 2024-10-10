@@ -209,11 +209,11 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
         self.init(BInt(n), BInt(d))
     }
 
-    /// Constructs a BFraction from a decimal value
+    /// Constructs a BFraction from a floating point value *d* and
+    /// aborts if *d* is infinite or NaN.
     ///
     /// - Parameters:
-    ///   - d: The decimal value
-    /// - Returns: The BFraction corresponding to `d`, `nil` if `d` is infinite or NaN
+    ///   - d: The floating point value
     public init?(_ d: Double) {
         if d.isNaN || d.isInfinite {
             return nil
@@ -229,11 +229,11 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
         }
     }
 
-    /// Constructs a BFraction from a String representation
+    /// Constructs a BFraction from a String representation and aborts
+    /// if *x* does not represent a valid floating point number.
     ///
     /// - Parameters:
     ///   - x: The String representation
-    /// - Returns: The BFraction represented by `x`, `nil` if `x` does not represent a decimal number
     ///
     /// Examples:
     ///    * BFraction("3.1415") = 6283 / 2000
@@ -252,10 +252,10 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
     
     /// Constructs a BFraction from a continued fraction - `BInt` version
     ///
-    /// - Precondition: `x` contains at least one element, all elements except possibly the first are positive
+    /// - Precondition: *x* contains at least one element, all elements
+    ///                   except possibly the first are positive
     /// - Parameters:
     ///   - x: The continued fraction
-    /// - Returns: The BFraction represented by `x`
     public init(_ x: [BInt]) {
         precondition(x.count > 0)
         var numerator = BInt.ZERO
@@ -274,7 +274,6 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
     /// - Precondition: `x` contains at least one element, all elements except possibly the first are positive
     /// - Parameters:
     ///   - x: The continued fraction
-    /// - Returns: The BFraction represented by `x`
     public init(_ x: [Int]) {
         var bx = [BInt](repeating: BInt.ZERO, count: x.count)
         for i in 0 ..< bx.count {
