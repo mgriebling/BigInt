@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1600"
+   version = "1.7">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES"
+      buildArchitectures = "Automatic">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BigInt"
+               BuildableName = "BigInt"
+               BlueprintName = "BigInt"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:.swiftpm/BigInt.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BigIntTests"
+               BuildableName = "BigIntTests"
+               BlueprintName = "BigIntTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BinomialTest">
+               </Test>
+               <Test
+                  Identifier = "BinomialTest/test1()">
+               </Test>
+               <Test
+                  Identifier = "DivModBZTest">
+               </Test>
+               <Test
+                  Identifier = "FFTTest">
+               </Test>
+               <Test
+                  Identifier = "FFTTest/test1()">
+               </Test>
+               <Test
+                  Identifier = "FFTTest/test2()">
+               </Test>
+               <Test
+                  Identifier = "FFTTest/test3()">
+               </Test>
+               <Test
+                  Identifier = "FFTTest/test4()">
+               </Test>
+               <Test
+                  Identifier = "FFTTest/test5()">
+               </Test>
+               <Test
+                  Identifier = "GcdExtendedTest">
+               </Test>
+               <Test
+                  Identifier = "GcdExtendedTest/test1()">
+               </Test>
+               <Test
+                  Identifier = "GcdExtendedTest/test2()">
+               </Test>
+               <Test
+                  Identifier = "GcdExtendedTest/testRecursiveGCD()">
+               </Test>
+               <Test
+                  Identifier = "GcdTest">
+               </Test>
+               <Test
+                  Identifier = "GcdTest/test1()">
+               </Test>
+               <Test
+                  Identifier = "GcdTest/test2()">
+               </Test>
+               <Test
+                  Identifier = "GcdTest/test3()">
+               </Test>
+               <Test
+                  Identifier = "GcdTest/testRecursiveGCD()">
+               </Test>
+               <Test
+                  Identifier = "RootTest">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test1()">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test2()">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test3()">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test4()">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test5()">
+               </Test>
+               <Test
+                  Identifier = "RootTest/test6()">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+      </Testables>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BigInt"
+            BuildableName = "BigInt"
+            BlueprintName = "BigInt"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </MacroExpansion>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>

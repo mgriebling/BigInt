@@ -73,12 +73,14 @@ extension BInt : BinaryInteger {
     }
 }
 
-extension BInt {
+extension BInt : ExpressibleByIntegerLiteral {
     
     /// Constructs a BInt from a StaticBigInt
     ///
     /// - Parameters:
     ///   - value: extended-precision integer literal
+    /// - Precondition:
+    ///     Size of words must be 64 bits.
     public init(integerLiteral value: StaticBigInt) {
         let isNegative = value.signum() < 0
         let bitWidth = value.bitWidth

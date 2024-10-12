@@ -9,7 +9,7 @@
 /*
  * BitSieve class from Java BigInteger translated to Swift
  */
-class BitSieve {
+struct BitSieve {
     
     var bits: [UInt64]
     let length: Int
@@ -89,7 +89,7 @@ class BitSieve {
     /**
      * Set the bit at the specified index.
      */
-    func set(_ bitIndex: Int) {
+    mutating func set(_ bitIndex: Int) {
         self.bits[bitIndex >> 6] |= Limbs.UMasks[bitIndex & 0x3f]
     }
     
@@ -117,7 +117,7 @@ class BitSieve {
      * multiples of the specified step starting at the specified start index,
      * up to the specified limit.
      */
-    func sieveSingle(_ limit: Int, _ start: Int, _ step: Int) {
+    mutating func sieveSingle(_ limit: Int, _ start: Int, _ step: Int) {
         var x = start
         while x < limit {
             set(x)
