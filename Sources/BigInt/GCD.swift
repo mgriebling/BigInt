@@ -225,7 +225,7 @@ extension BInt {
         if v.isZero {
             return u
         }
-        if u.magnitude.count > 1 {
+        if u._magnitude.count > 1 {
             let r = u.quotientAndRemainder(dividingBy: v).remainder
             u = v
             v = r
@@ -236,7 +236,7 @@ extension BInt {
         // u and v are one-limb values
         assert(u < BInt.ONE << 64)
         assert(v < BInt.ONE << 64)
-        return BInt([Limbs.binaryGcd(u.magnitude[0], v.magnitude[0])])
+        return BInt([Limbs.binaryGcd(u._magnitude[0], v._magnitude[0])])
      }
     
     // Lehmer's gcd algorithm - [KNUTH] chapter 4.5.2, algorithm L and exercise 18

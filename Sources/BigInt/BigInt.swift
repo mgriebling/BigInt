@@ -28,7 +28,7 @@ precedencegroup ExponentiationPrecedence {
 
 infix operator ** : ExponentiationPrecedence
 
-public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
+public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equatable, Hashable {
     
     // MARK: - Constants
     
@@ -64,8 +64,8 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - magnitude: Magnitude of value
     ///   - isNegative: `true` means negative value, `false` means 0 or positive value, default is `false`
     public init(_ magnitude: Limbs, _ isNegative : Bool = false) {
-        self.magnitude = magnitude
-        self.magnitude.normalize()
+        self._magnitude = magnitude
+        self._magnitude.normalize()
         self.isNegative = isNegative
         if self.isZero {
             self.isNegative = false
@@ -249,22 +249,22 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         }
         let chunks = bb.count / 8
         let remaining = bb.count - chunks * 8
-        self.magnitude = Limbs(repeating: 0, count: chunks + (remaining == 0 ? 0 : 1))
+        self._magnitude = Limbs(repeating: 0, count: chunks + (remaining == 0 ? 0 : 1))
         var bi = 0
-        var li = self.magnitude.count
+        var li = self._magnitude.count
         if remaining > 0 {
             li -= 1
         }
         for _ in 0 ..< remaining {
-            self.magnitude[li] <<= 8
-            self.magnitude[li] |= Limb(bb[bi])
+            self._magnitude[li] <<= 8
+            self._magnitude[li] |= Limb(bb[bi])
             bi += 1
         }
         for _ in 0 ..< chunks {
             li -= 1
             for _ in 0 ..< 8 {
-                self.magnitude[li] <<= 8
-                self.magnitude[li] |= Limb(bb[bi])
+                self._magnitude[li] <<= 8
+                self._magnitude[li] |= Limb(bb[bi])
                 bi += 1
             }
         }
@@ -277,19 +277,19 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public internal(set) var isNegative: Bool
     
     /// The magnitude limb array
-    public internal(set) var magnitude: Limbs
+    public internal(set) var _magnitude: Limbs
     
     
     // MARK: Computed properties
     
     /// The absolute value of `self`
     public var abs: BInt {
-        return BInt(self.magnitude)
+        return BInt(self._magnitude)
     }
     
     /// The number of bits in the binary representation of the magnitude of `self`. 0 if `self` = 0
     public var bitWidth: Int {
-        return self.magnitude.bitWidth
+        return self._magnitude.bitWidth
     }
     
     /// Base 10 string value of `self`
@@ -299,22 +299,22 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     
     /// Is `true` if `self` is even, `false` if `self` is odd
     public var isEven: Bool {
-        return self.magnitude[0] & 1 == 0
+        return self._magnitude[0] & 1 == 0
     }
     
     /// Is `false` if `self` = 0, `true` otherwise
     public var isNotZero: Bool {
-        return self.magnitude.count > 1 || self.magnitude[0] > 0
+        return self._magnitude.count > 1 || self._magnitude[0] > 0
     }
     
     /// Is `true` if `self` is odd, `false` if `self` is even
     public var isOdd: Bool {
-        return self.magnitude[0] & 1 == 1
+        return self._magnitude[0] & 1 == 1
     }
     
     /// Is `true` if `self` = 1, `false` otherwise
     public var isOne: Bool {
-        return self.magnitude.count == 1 && self.magnitude[0] == 1 && !self.isNegative
+        return self._magnitude.count == 1 && self._magnitude[0] == 1 && !self.isNegative
     }
     
     /// Is `true` if `self` > 0, `false` otherwise
@@ -324,23 +324,23 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
 
     /// Is `true` if `self` is a power of 2: 1, 2, 4, 8 ..., `false` otherwise
     public var isPow2: Bool {
-        return !self.isNegative && self.bitWidth == self.magnitude.trailingZeroBitCount() + 1
+        return !self.isNegative && self.bitWidth == self._magnitude.trailingZeroBitCount() + 1
     }
 
     /// Is `true` if `self` = 0, `false` otherwise
     public var isZero: Bool {
-        return self.magnitude.count == 1 && self.magnitude[0] == 0
+        return self._magnitude.count == 1 && self._magnitude[0] == 0
     }
     
     /// The number of leading zero bits in the magnitude of `self`. 0 if `self` = 0
     public var leadingZeroBitCount: Int {
-        return self.isZero ? 0 : self.magnitude.last!.leadingZeroBitCount
+        return self.isZero ? 0 : self._magnitude.last!.leadingZeroBitCount
     }
     
     /// The number of 1 bits in the magnitude of `self`
     public var population: Int {
         var p = 0
-        for m in self.magnitude {
+        for m in self._magnitude {
             p += BInt.population(m)
         }
         return p
@@ -353,7 +353,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     
     /// The number of trailing zero bits in the magnitude of `self`. 0 if `self` = 0
     public var trailingZeroBitCount: Int {
-        return self.magnitude.trailingZeroBitCount()
+        return self._magnitude.trailingZeroBitCount()
     }
     
     /*
@@ -384,7 +384,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Returns: `self` as a `Double` or `Infinity` if `self` is not representable as a `Double`
     public func asDouble() -> Double {
         var d = 0.0
-        for m in self.magnitude.reversed() {
+        for m in self._magnitude.reversed() {
             d *= BInt.d264
             d += Double(m)
         }
@@ -395,10 +395,10 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///
     /// - Returns: `self` as an `Int` or `nil` if `self` is not representable as an `Int`
     public func asInt() -> Int? {
-        if self.magnitude.count > 1 {
+        if self._magnitude.count > 1 {
             return nil
         }
-        let mag0 = self.magnitude[0]
+        let mag0 = self._magnitude[0]
         if self.isNegative {
             return mag0 > 0x8000000000000000 ? nil : (mag0 == 0x8000000000000000 ? Int.min : -Int(mag0))
         } else {
@@ -472,7 +472,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///    * BInt(1).asSignedBytes() = [1]
     ///    * BInt(-1).asSignedBytes() = [255]
     public func asSignedBytes() -> Bytes {
-        var xl = self.magnitude
+        var xl = self._magnitude
         if self.isNegative {
             var carry = true
             for i in 0 ..< xl.count {
@@ -529,7 +529,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         }
         let d = BInt.limbRadix[radix]
         var digitGroups = [String]()
-        var tmp = self.magnitude
+        var tmp = self._magnitude
         while !tmp.equalTo(0) {
             let (q, r) = tmp.divMod(d)
             digitGroups.append(String(r, radix: radix, uppercase: uppercase))
@@ -546,8 +546,8 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     }
     
     static func toSignedLimbsPair(_ x: BInt, _ y: BInt) -> (bx: Limbs, by: Limbs) {
-        var bx = x.magnitude
-        var by = y.magnitude
+        var bx = x._magnitude
+        var by = y._magnitude
         if x.isNegative {
             invert(&bx)
             if bx.last! & 0x8000000000000000 == 0 {
@@ -689,21 +689,21 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///
     /// - Parameter n: The bit number
     public mutating func clearBit(_ n: Int) {
-        self.magnitude.clearBitAt(n)
+        self._magnitude.clearBitAt(n)
     }
     
     /// Invert a specified bit - a no-op if bit number < 0
     ///
     /// - Parameter n: The bit number
     public mutating func flipBit(_ n: Int) {
-        self.magnitude.flipBitAt(n)
+        self._magnitude.flipBitAt(n)
     }
     
     /// Set a specified bit - a no-op if bit number < 0
     ///
     /// - Parameter n: The bit number
     public mutating func setBit(_ n: Int) {
-        self.magnitude.setBitAt(n)
+        self._magnitude.setBitAt(n)
     }
     
     /// Test a specified bit - `false` if bit number < 0
@@ -711,7 +711,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Parameter n: The bit number
     /// - Returns: `true` if bit is set, `false` otherwise
     public func testBit(_ n: Int) -> Bool {
-        return self.magnitude.testBitAt(n)
+        return self._magnitude.testBitAt(n)
     }
     
     
@@ -768,9 +768,9 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - y: Right hand addend
     public static func +=(x: inout BInt, y: BInt) {
         if x.isNegative == y.isNegative {
-            x.magnitude.add(y.magnitude)
+            x._magnitude.add(y._magnitude)
         } else {
-            let cmp = x.magnitude.difference(y.magnitude)
+            let cmp = x._magnitude.difference(y._magnitude)
             if cmp < 0 {
                 x.isNegative = !x.isNegative
             } else if cmp == 0 {
@@ -791,18 +791,18 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         
         if y > 0 {
             if x.isNegative {
-                if x.magnitude.difference(Limb(y)) <= 0 {
+                if x._magnitude.difference(Limb(y)) <= 0 {
                     x.setSign(false)
                 }
             } else {
-                x.magnitude.add(Limb(y))
+                x._magnitude.add(Limb(y))
             }
         } else if y < 0 {
             let yy = y == Int.min ? 0x8000000000000000 : Limb(-y)
             if x.isNegative {
-                x.magnitude.add(yy)
+                x._magnitude.add(yy)
             } else {
-                if x.magnitude.difference(yy) < 0 {
+                if x._magnitude.difference(yy) < 0 {
                     x.setSign(true)
                 }
             }
@@ -875,14 +875,14 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - y: Right hand subtrahend
     public static func -=(x: inout BInt, y: BInt) {
         if x.isNegative == y.isNegative {
-            let cmp = x.magnitude.difference(y.magnitude)
+            let cmp = x._magnitude.difference(y._magnitude)
             if cmp < 0 {
                 x.isNegative = !x.isNegative
             } else if cmp == 0 {
                 x.isNegative = false
             }
         } else {
-            x.magnitude.add(y.magnitude)
+            x._magnitude.add(y._magnitude)
         }
     }
     
@@ -898,18 +898,18 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         
         if y > 0 {
             if x.isNegative {
-                x.magnitude.add(Limb(y))
+                x._magnitude.add(Limb(y))
             } else {
-                if x.magnitude.difference(Limb(y)) < 0 {
+                if x._magnitude.difference(Limb(y)) < 0 {
                     x.setSign(true)
                 }
             }
         } else if y < 0 {
             let yy = y == Int.min ? 0x8000000000000000 : Limb(-y)
             if x.isPositive {
-                x.magnitude.add(yy)
+                x._magnitude.add(yy)
             } else {
-                if x.magnitude.difference(yy) <= 0 {
+                if x._magnitude.difference(yy) <= 0 {
                     x.setSign(false)
                 }
             }
@@ -961,7 +961,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - x: Left hand multiplier
     ///   - y: Right hand multiplicand
     public static func *=(x: inout BInt, y: BInt) {
-        x.magnitude.multiply(y.magnitude)
+        x._magnitude.multiply(y._magnitude)
         x.setSign(x.isNegative != y.isNegative)
     }
     
@@ -972,12 +972,12 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - y: Right hand multiplicand
     public static func *=(x: inout BInt, y: Int) {
         if y > 0 {
-            x.magnitude.multiply(Limb(y))
+            x._magnitude.multiply(Limb(y))
         } else if y < 0 {
             if y == Int.min {
-                x.magnitude.shiftLeft(63)
+                x._magnitude.shiftLeft(63)
             } else {
-                x.magnitude.multiply(Limb(-y))
+                x._magnitude.multiply(Limb(-y))
             }
             x.setSign(!x.isNegative)
         } else {
@@ -996,10 +996,10 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public func quotientAndRemainder(dividingBy x: BInt) -> (quotient: BInt, remainder: BInt) {
         var quotient = BInt.ZERO
         var remainder = BInt.ZERO
-        if x.magnitude.count > Limbs.BZ_DIV_LIMIT && self.magnitude.count > x.magnitude.count + Limbs.BZ_DIV_LIMIT {
-            (quotient.magnitude, remainder.magnitude) = self.magnitude.bzDivMod(x.magnitude)
+        if x._magnitude.count > Limbs.BZ_DIV_LIMIT && self._magnitude.count > x._magnitude.count + Limbs.BZ_DIV_LIMIT {
+            (quotient._magnitude, remainder._magnitude) = self._magnitude.bzDivMod(x._magnitude)
         } else {
-            (quotient.magnitude, remainder.magnitude) = self.magnitude.divMod(x.magnitude)
+            (quotient._magnitude, remainder._magnitude) = self._magnitude.divMod(x._magnitude)
         }
         quotient.setSign(self.isNegative != x.isNegative)
         remainder.setSign(self.isNegative)
@@ -1031,7 +1031,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         }
         var quotient = BInt.ZERO
         var r: Limb
-        (quotient.magnitude, r) = self.magnitude.divMod(divisor)
+        (quotient._magnitude, r) = self._magnitude.divMod(divisor)
         quotient.setSign(self.isNegative && x > 0 || self.isPositive && x < 0)
         let remainder = self.isNegative ? -Int(r) : Int(r)
         return (quotient, remainder)
@@ -1054,7 +1054,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Parameter x: Divisor - a BInt value
     /// - Returns: Quotient of `self / x` - undefined if the remainder is in fact not 0
     public func quotientExact(dividingBy x: BInt) -> BInt {
-        return BInt(self.magnitude.divExact(x.magnitude), self.isNegative != x.isNegative)
+        return BInt(self._magnitude.divExact(x._magnitude), self.isNegative != x.isNegative)
     }
     
     /// Division
@@ -1187,11 +1187,11 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Returns: `self` mod `x`, a non-negative value
     public func mod(_ x: Int) -> Int {
         if x == Int.min {
-            let r = Int(self.magnitude[0] & 0x7fffffffffffffff)
+            let r = Int(self._magnitude[0] & 0x7fffffffffffffff)
             return self.isNegative && r > 0 ? -(Int.min + r) : r
         }
         let absx = Limb(Swift.abs(x))
-        let (_, r) = self.magnitude.divMod(absx)
+        let (_, r) = self._magnitude.divMod(absx)
         return Int(self.isNegative && r > 0 ? absx - r : r)
     }
     
@@ -1222,7 +1222,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             var x = BInt.ZERO
             var b = BInt.ONE
             for i in 0 ..< tb {
-                if b.magnitude[0] & 1 == 1 {
+                if b._magnitude[0] & 1 == 1 {
                     x.setBit(i)
                     b -= selfr
                 }
@@ -1254,7 +1254,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             // [KOC] - section 7
             
             // Reduce mod m
-            let m = self.magnitude[0] & (1 << tb - 1)
+            let m = self._magnitude[0] & (1 << tb - 1)
             let selfr = self.isNegative ? -Int(m) : Int(m)
             
             var x = 0
@@ -1292,7 +1292,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Returns: `a^x`
     public static func **(a: BInt, x: Int) -> BInt {
         precondition(x >= 0, "Exponent must be non-negative")
-        return x == 2 ? (a.magnitude.count > 16 ? BInt(a.magnitude.squared()) : a * a) : BInt(a.magnitude.raisedTo(x), a.isNegative && (x & 1 == 1))
+        return x == 2 ? (a._magnitude.count > 16 ? BInt(a._magnitude.squared()) : a * a) : BInt(a._magnitude.raisedTo(x), a.isNegative && (x & 1 == 1))
     }
     
     /// Modular exponentiation - BInt version
@@ -1398,7 +1398,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - y: Second operand
     /// - Returns: `true` if x = y, `false` otherwise
     public static func ==(x: BInt, y: BInt) -> Bool {
-        return x.magnitude == y.magnitude && x.isNegative == y.isNegative
+        return x._magnitude == y._magnitude && x.isNegative == y.isNegative
     }
     
     /// Equal
@@ -1428,7 +1428,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     ///   - y: Second operand
     /// - Returns: `true` if x != y, `false` otherwise
     public static func !=(x: BInt, y: BInt) -> Bool {
-        return x.magnitude != y.magnitude || x.isNegative != y.isNegative
+        return x._magnitude != y._magnitude || x.isNegative != y.isNegative
     }
     
     /// Not equal
@@ -1460,7 +1460,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public static func <(x: BInt, y: BInt) -> Bool {
         if x.isNegative {
             if y.isNegative {
-                return y.magnitude.compare(x.magnitude) < 0
+                return y._magnitude.compare(x._magnitude) < 0
             } else {
                 return true
             }
@@ -1468,7 +1468,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             if y.isNegative {
                 return false
             } else {
-                return x.magnitude.compare(y.magnitude) < 0
+                return x._magnitude.compare(y._magnitude) < 0
             }
         }
     }
@@ -1482,7 +1482,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public static func <(x: BInt, y: Int) -> Bool {
         if x.isNegative {
             if y < 0 {
-                return y == Int.min ? x < BInt(y) : x.magnitude.compare(Limb(-y)) > 0
+                return y == Int.min ? x < BInt(y) : x._magnitude.compare(Limb(-y)) > 0
             } else {
                 return true
             }
@@ -1490,7 +1490,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             if y < 0 {
                 return false
             } else {
-                return x.magnitude.compare(Limb(y)) < 0
+                return x._magnitude.compare(Limb(y)) < 0
             }
         }
     }
@@ -1504,7 +1504,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public static func <(x: Int, y: BInt) -> Bool {
         if y.isNegative {
             if x < 0 {
-                return x == Int.min ? BInt(x) < y : y.magnitude.compare(Limb(-x)) <= 0
+                return x == Int.min ? BInt(x) < y : y._magnitude.compare(Limb(-x)) <= 0
             } else {
                 return false
             }
@@ -1512,7 +1512,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             if x < 0 {
                 return true
             } else {
-                return y.magnitude.compare(Limb(x)) > 0
+                return y._magnitude.compare(Limb(x)) > 0
             }
         }
     }
@@ -1625,7 +1625,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         if n < 0 {
             return n == Int.min ? (x >> Int.max) >> 1 : x >> -n
         }
-        return BInt(n == 1 ? x.magnitude.shifted1Left() : x.magnitude.shiftedLeft(n), x.isNegative)
+        return BInt(n == 1 ? x._magnitude.shifted1Left() : x._magnitude.shiftedLeft(n), x.isNegative)
     }
     
     /// x = x << n
@@ -1636,15 +1636,15 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public static func <<=(x: inout BInt, n: Int) {
         if n < 0 {
             if n == Int.min {
-                x.magnitude.shiftRight(Int.max)
-                x.magnitude.shift1Right()
+                x._magnitude.shiftRight(Int.max)
+                x._magnitude.shift1Right()
             } else {
-                x.magnitude.shiftRight(-n)
+                x._magnitude.shiftRight(-n)
             }
         } else if n == 1 {
-            x.magnitude.shift1Left()
+            x._magnitude.shift1Left()
         } else {
-            x.magnitude.shiftLeft(n)
+            x._magnitude.shiftLeft(n)
         }
     }
     
@@ -1663,7 +1663,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         if n < 0 {
             return n == Int.min ? (x << Int.max) << 1 : x << -n
         }
-        return BInt(n == 1 ? x.magnitude.shifted1Right() : x.magnitude.shiftedRight(n), x.isNegative)
+        return BInt(n == 1 ? x._magnitude.shifted1Right() : x._magnitude.shiftedRight(n), x.isNegative)
     }
     
     /// x = x >> n
@@ -1674,15 +1674,15 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     public static func >>=(x: inout BInt, n: Int) {
         if n < 0 {
             if n == Int.min {
-                x.magnitude.shiftLeft(Int.max)
-                x.magnitude.shift1Left()
+                x._magnitude.shiftLeft(Int.max)
+                x._magnitude.shift1Left()
             } else {
-                x.magnitude.shiftLeft(-n)
+                x._magnitude.shiftLeft(-n)
             }
         } else if n == 1 {
-            x.magnitude.shift1Right()
+            x._magnitude.shift1Right()
         } else {
-            x.magnitude.shiftRight(n)
+            x._magnitude.shiftRight(n)
         }
         if x.isZero {
             x.isNegative = false
@@ -2021,16 +2021,16 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Returns: `root` = the integer part of the square root of `self` and `rem` = `self` - `root^2`
     public func sqrtRemainder() -> (root: BInt, rem: BInt) {
         precondition(!self.isNegative, "Square root of negative number")
-        let l = (self.magnitude.count - 1) >> 2
+        let l = (self._magnitude.count - 1) >> 2
         if l == 0 {
             let sq = self.basicSqrt()
             return (sq, self - sq ** 2)
         }
         let shifts = l * 64
-        let a0 = BInt(Limbs(self.magnitude[0 ..< l]))
-        let a1 = BInt(Limbs(self.magnitude[l ..< 2 * l]))
-        let a2 = BInt(Limbs(self.magnitude[2 * l ..< 3 * l]))
-        let a3 = BInt(Limbs(self.magnitude[3 * l ..< self.magnitude.count]))
+        let a0 = BInt(Limbs(self._magnitude[0 ..< l]))
+        let a1 = BInt(Limbs(self._magnitude[l ..< 2 * l]))
+        let a2 = BInt(Limbs(self._magnitude[2 * l ..< 3 * l]))
+        let a3 = BInt(Limbs(self._magnitude[3 * l ..< self._magnitude.count]))
         let (s1, r1) = (a3 << shifts + a2).sqrtRemainder()
         let (q, u) = (r1 << shifts + a1).quotientAndRemainder(dividingBy: s1 << 1)
         var s = s1 << shifts + q
@@ -2067,7 +2067,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         if self.isNegative {
             return false
         } else {
-            return BInt.maybeSquare[Int(self.magnitude[0] & 0xff)] ? self.sqrtRemainder().rem.isZero : false
+            return BInt.maybeSquare[Int(self._magnitude[0] & 0xff)] ? self.sqrtRemainder().rem.isZero : false
         }
     }
     
@@ -2301,7 +2301,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Parameter x: Operand
     /// - Returns: Greatest common divisor of `self` and `x`
     public func gcd(_ x: BInt) -> BInt {
-        if self.magnitude.count > BInt.RECURSIVE_GCD_LIMIT && x.magnitude.count > BInt.RECURSIVE_GCD_LIMIT {
+        if self._magnitude.count > BInt.RECURSIVE_GCD_LIMIT && x._magnitude.count > BInt.RECURSIVE_GCD_LIMIT {
             return self.recursiveGCD(x)
         } else {
             return self.lehmerGCD(x)
@@ -2325,7 +2325,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     /// - Parameter x: Operand
     /// - Returns: Greatest common divisor `g` of `self` and `x`, and `a` and `b` such that `a` * `self` + `b` * `x` = `g`
     public func gcdExtended(_ x: BInt) -> (g: BInt, a: BInt, b: BInt) {
-        if self.magnitude.count > BInt.RECURSIVE_GCD_EXT_LIMIT && x.magnitude.count > BInt.RECURSIVE_GCD_EXT_LIMIT {
+        if self._magnitude.count > BInt.RECURSIVE_GCD_EXT_LIMIT && x._magnitude.count > BInt.RECURSIVE_GCD_EXT_LIMIT {
             return self.recursiveGCDext(x)
         } else {
             return self.lehmerGCDext(x)
@@ -2357,7 +2357,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
         while a.isNotZero {
             while a.isEven {
                 a >>= 1
-                let x = m1.magnitude[0] & 7
+                let x = m1._magnitude[0] & 7
                 if x == 3 || x == 5 {
                     t = -t
                 }
@@ -2365,7 +2365,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
             let x = a
             a = m1
             m1 = x
-            if a.magnitude[0] & 3 == 3 && m1.magnitude[0] & 3 == 3 {
+            if a._magnitude[0] & 3 == 3 && m1._magnitude[0] & 3 == 3 {
                 t = -t
             }
             a = a.mod(m1)
@@ -2416,7 +2416,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
                 if self.isEven {
                     return 0
                 } else {
-                    let r = self.magnitude[0] & 7
+                    let r = self._magnitude[0] & 7
                     return r == 1 || r == 7 ? self.kroneckerSymbol(m >> 1) : -self.kroneckerSymbol(m >> 1)
                 }
             }
@@ -2440,7 +2440,7 @@ public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
                 if self.isEven {
                     return 0
                 } else {
-                    let r = self.magnitude[0] & 7
+                    let r = self._magnitude[0] & 7
                     return r == 1 || r == 7 ? self.kroneckerSymbol(m >> 1) : -self.kroneckerSymbol(m >> 1)
                 }
             }

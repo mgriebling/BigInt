@@ -5,13 +5,15 @@ Signed integers and fractions of unbounded size
 ## 
 
 > Important:
-**Please note:** Due to a bug in GitHub Pages,
-> clicking on certain `BInt` and `BFraction` operators in GitHub Pages (f.ex. < and | ) will show the message
+**Please note:** Due to a bug in the DocC plugin that generated this documentation,
+> clicking on certain `BInt` and `BFraction` operators in GitHub Pages (e.g., `<` and `|` ) will show the message
 >
+>   ```
 >    The page you're looking for can't be found.
+>   ```
 >   
 > The *BigInt.doccarchive* file contains the correct documentation.
-> It is emphasized that it is only the documentation that's in error.
+> It is emphasized that it is *only* the documentation that's in error.
 > The operators themselves work correctly.
 
 ## Overview
@@ -30,13 +32,17 @@ The BigInt package provides arbitrary-precision integer and fraction arithmetic 
 
     Please, see <doc:AboutCRT>
 
+* **Protocol and Extension Support**
+
+    Please, see <doc:Protocols>
+
 ### Usage
 
 To use BigInt, in your project Package.swift file add a dependency like
 
 ```swift
 dependencies: [
-  package(url: "https://github.com/leif-ibsen/BigInt", from: "1.21.0"),
+  package(url: "https://github.com/mgriebling/BigInt.git", from: "2.2.0"),
 ]
 ```
 
@@ -68,3 +74,4 @@ BigInt requires Swift 5.0. It also requires that the `Int` and `UInt` types be 6
 - <doc:Performance>
 - <doc:References>
 - <doc:Algorithms>
+- <doc:Protocols>

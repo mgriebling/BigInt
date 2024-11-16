@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C8047937-EC00-46BD-B937-0B8D53CF0767",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "BigIntTests",
+        "name" : "BigIntTests"
+      }
+    }
+  ],
+  "version" : 1
+}
