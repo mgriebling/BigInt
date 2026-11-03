@@ -4,6 +4,13 @@
 //  Created by Mike Griebling on 13.07.2023.
 //
 
+/// Note: Numeric compliance, a prerequisite for BinaryInteger and SignedInteger, requires
+/// a *magnitude* variable which is in conflict with Leif Ibsen's original BigInt package definition.
+/// Adding these compliances requires renaming Ibsen's *magnitude* to begin with an underscore.
+/// Having these compliances, means that *BInt* is a first-class integer and can be used anywhere
+/// that Swift *Int*s and related types are used to allow mixing any native integer type with the
+/// *BInt* type (e.g., let x = BInt(3) + 1) without needing to overload the "+" operator—although
+/// this is currently being done.
 extension BInt : SignedInteger {
     public static var isSigned: Bool { true }
     
@@ -56,6 +63,7 @@ extension BInt : SignedInteger {
 }
 
 extension BInt : Numeric {
+	public typealias Magnitude = BInt
     public var magnitude: BInt { BInt(_magnitude) }
 }
 

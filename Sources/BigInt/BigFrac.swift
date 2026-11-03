@@ -312,6 +312,11 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
     public var isPositive: Bool {
         return self.numerator.isPositive
     }
+	
+	/// Is `true` if `self` is a power of 2: ... 1/8, 1/4, 1/2, 1, 2, 4, 8 ..., `false` otherwise
+	public var isPow2: Bool {
+		return self.numerator == BInt.ONE && self.denominator.isPow2 || self.denominator == BInt.ONE && self.numerator.isPow2
+	}
 
     /// Is `true` if `self` = 0, `false` otherwise
     public var isZero: Bool {
@@ -345,8 +350,8 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
         if self.isZero {
             return BFraction.displayString(BInt.ZERO, -precision, exponential)
         }
-        let P = BInt.TEN ** precision
-        var exp = 0
+        let P = BInt.TEN ** (precision + 1)
+        var exp = 1
         var q = self.numerator.abs
         while q.quotientAndRemainder(dividingBy: self.denominator).quotient < P {
             q *= BInt.TEN
@@ -356,7 +361,10 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
             q /= BInt.TEN
             exp += 1
         }
-        let x = q.quotientAndRemainder(dividingBy: self.denominator).quotient
+		var (x, r) = q.quotientAndRemainder(dividingBy: self.denominator * BInt.TEN)
+		if 2 * r >= self.denominator * BInt.TEN {
+			x += 1
+		}
         return BFraction.displayString(self.isNegative ? -x : x, exp, exponential)
     }
 
@@ -835,23 +843,21 @@ public struct BFraction: CustomStringConvertible, Comparable, Equatable {
     ///
     /// - Returns: `self` rounded to an integer towards 0
     public func truncate() -> BInt {
-        return self.isPositive ? self.floor() : self.ceil()
+		return self.numerator.quotientAndRemainder(dividingBy: self.denominator).quotient
     }
 
     /// Round towards +Infinity
     ///
     /// - Returns: `self` rounded to an integer towards +Infinity
     public func ceil() -> BInt {
-        let (q, r) = self.numerator.quotientAndRemainder(dividingBy: self.denominator)
-        return r.isPositive ? q + 1 : q
+		return self.numerator.quotientAndRemainderCeil(dividingBy: self.denominator).quotient
     }
 
     /// Round towards -Infinity
     ///
     /// - Returns: `self` rounded to an integer towards -Infinity
     public func floor() -> BInt {
-        let (q, r) = self.numerator.quotientAndRemainder(dividingBy: self.denominator)
-        return r.isNegative ? q - 1 : q
+		return self.numerator.quotientAndRemainderFloor(dividingBy: self.denominator).quotient
     }
 
 

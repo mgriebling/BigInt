@@ -28,7 +28,7 @@ precedencegroup ExponentiationPrecedence {
 
 infix operator ** : ExponentiationPrecedence
 
-public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equatable, Hashable {
+public struct BInt: CustomStringConvertible, Comparable, Equatable, Hashable {
     
     // MARK: - Constants
     
@@ -1005,6 +1005,34 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
         remainder.setSign(self.isNegative)
         return (quotient, remainder)
     }
+	
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameter x: Divisor - a BInt value
+	/// - Returns: Quotient and remainder of `self / x`, quotient rounded towards `-Infinity`
+	public func quotientAndRemainderFloor(dividingBy x: BInt) -> (quotient: BInt, remainder: BInt) {
+		var (q, r) = self.quotientAndRemainder(dividingBy: x)
+		if (r + x).abs < x.abs {
+			q -= BInt.ONE
+			r += x
+		}
+		return (q, r)
+	}
+
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameter x: Divisor - a BInt value
+	/// - Returns: Quotient and remainder of `self / x`, quotient rounded towards `+Infinity`
+	public func quotientAndRemainderCeil(dividingBy x: BInt) -> (quotient: BInt, remainder: BInt) {
+		var (q, r) = self.quotientAndRemainder(dividingBy: x)
+		if (r - x).abs < x.abs {
+			q += BInt.ONE
+			r -= x
+		}
+		return (q, r)
+	}
     
     /// Division
     ///
@@ -1016,6 +1044,28 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
     public func quotientAndRemainder(dividingBy x: BInt, _ quotient: inout BInt, _ remainder: inout BInt) {
         (quotient, remainder) = self.quotientAndRemainder(dividingBy: x)
     }
+	
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameters:
+	///   - x: Divisor - a BInt value
+	///   - quotient: Set to the quotient of `self / x`, rounded towards `-Infinity`
+	///   - remainder: Set to the remainder of `self / x`
+	public func quotientAndRemainderFloor(dividingBy x: BInt, _ quotient: inout BInt, _ remainder: inout BInt) {
+		(quotient, remainder) = self.quotientAndRemainderFloor(dividingBy: x)
+	}
+
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameters:
+	///   - x: Divisor - a BInt value
+	///   - quotient: Set to the quotient of `self / x`, rounded towards `+Infinity`
+	///   - remainder: Set to the remainder of `self / x`
+	public func quotientAndRemainderCeil(dividingBy x: BInt, _ quotient: inout BInt, _ remainder: inout BInt) {
+		(quotient, remainder) = self.quotientAndRemainderCeil(dividingBy: x)
+	}
     
     /// Division
     ///
@@ -1036,17 +1086,67 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
         let remainder = self.isNegative ? -Int(r) : Int(r)
         return (quotient, remainder)
     }
-    
-    /// Division
-    ///
-    /// - Precondition: Divisor is not zero
-    /// - Parameters:
-    ///   - x: Divisor - an Int value
-    ///   - quotient: Set to the quotient of `self / x`
-    ///   - remainder: Set to the remainder of `self / x`
-    public func quotientAndRemainder(dividingBy x: Int, _ quotient: inout BInt, _ remainder: inout Int) {
-        (quotient, remainder) = self.quotientAndRemainder(dividingBy: x)
-    }
+	
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameter x: Divisor - an Int value
+	/// - Returns: Quotient and remainder of `self / x`, quotient rounded towards `-Infinity`
+	public func quotientAndRemainderFloor(dividingBy x: Int) -> (quotient: BInt, remainder: Int) {
+		var (q, r) = self.quotientAndRemainder(dividingBy: x)
+		if (BInt(r) + BInt(x)).abs < BInt(x).abs{
+			q -= BInt.ONE
+			r += x
+		}
+		return (q, r)
+	}
+
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameter x: Divisor - an Int value
+	/// - Returns: Quotient and remainder of `self / x`, quotient rounded towards `+Infinity`
+	public func quotientAndRemainderCeil(dividingBy x: Int) -> (quotient: BInt, remainder: Int) {
+		var (q, r) = self.quotientAndRemainder(dividingBy: x)
+		if (BInt(r) - BInt(x)).abs < BInt(x).abs {
+			q += BInt.ONE
+			r -= x
+		}
+		return (q, r)
+	}
+
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameters:
+	///   - x: Divisor - an Int value
+	///   - quotient: Set to the quotient of `self / x`, rounded towards `0`
+	///   - remainder: Set to the remainder of `self / x`
+	public func quotientAndRemainder(dividingBy x: Int, _ quotient: inout BInt, _ remainder: inout Int) {
+		(quotient, remainder) = self.quotientAndRemainder(dividingBy: x)
+	}
+
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameters:
+	///   - x: Divisor - an Int value
+	///   - quotient: Set to the quotient of `self / x`, rounded towards `-Infinity`
+	///   - remainder: Set to the remainder of `self / x`
+	public func quotientAndRemainderFloor(dividingBy x: Int, _ quotient: inout BInt, _ remainder: inout Int) {
+		(quotient, remainder) = self.quotientAndRemainderFloor(dividingBy: x)
+	}
+	
+	/// Division
+	///
+	/// - Precondition: Divisor is not zero
+	/// - Parameters:
+	///   - x: Divisor - an Int value
+	///   - quotient: Set to the quotient of `self / x`, rounded towards `+Infinity`
+	///   - remainder: Set to the remainder of `self / x`
+	public func quotientAndRemainderCeil(dividingBy x: Int, _ quotient: inout BInt, _ remainder: inout Int) {
+		(quotient, remainder) = self.quotientAndRemainderCeil(dividingBy: x)
+	}
     
     /// Exact division - that is, the remainder of the division is known to be 0
     ///
@@ -1209,26 +1309,23 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
             return BInt.ZERO
         }
         let tb = m.trailingZeroBitCount
-        if m.isPow2 && tb <= 1024 {
+        if m.isPow2 {
 
             precondition(self.isOdd, "No inverse modulus")
             
-            // Fast power of 2 implementation
-            // [KOC] - section 7
-            
-            // Reduce mod m
-            let selfr = self & (BInt.ONE << tb - BInt.ONE)
-            
-            var x = BInt.ZERO
-            var b = BInt.ONE
-            for i in 0 ..< tb {
-                if b._magnitude[0] & 1 == 1 {
-                    x.setBit(i)
-                    b -= selfr
-                }
-                b >>= 1
-            }
-            return x
+			// Algorithm using Newton iteration, doubling the number of valid bits per iteration
+
+			let tbMask = BInt.ONE << tb - BInt.ONE
+			let a = self & tbMask
+			var x = a & BInt.SEVEN
+			var bits = 3
+			var mask = BInt(0x3f)
+			while bits < tb {
+				x = (x << 1 - a * x * x) & mask
+				bits <<= 1
+				mask = mask << bits | mask
+			}
+			return x & tbMask
         }
         let (g, a, _) = self.mod(m).gcdExtended(m)
         precondition(g.isOne, "No inverse modulus")
@@ -1249,25 +1346,22 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
         if m >> tb == 1 {
 
             precondition(self.isOdd, "No inverse modulus")
-            
-            // Fast power of 2 implementation
-            // [KOC] - section 7
-            
-            // Reduce mod m
-            let m = self._magnitude[0] & (1 << tb - 1)
-            let selfr = self.isNegative ? -Int(m) : Int(m)
-            
-            var x = 0
-            var b = 1
-            for i in 0 ..< tb {
-                if b & 1 == 1 {
-                    x |= 1 << i
-                    b -= selfr
-                }
-                b >>= 1
-            }
-            return x
-        }
+
+			// Algorithm using Newton iteration, doubling the number of valid bits per iteration
+			
+			let tbMask = Limb(1 << tb - 1)
+			let a = self._magnitude[0] & tbMask
+			var x = a & 0x7
+			var bits = 3
+			var mask = Limb(0x3f)
+			while bits < tb {
+				x = x &* (2 &- a &* x) & mask
+				bits <<= 1
+				mask = mask << bits | mask
+			}
+			x &= tbMask
+			return self.isNegative ? m - Int(x): Int(x)
+		}
         var a = 1
         var g = self.mod(m)
         var u = 0
@@ -1302,42 +1396,22 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
     ///   - x: The exponent
     ///   - m: The modulus
     /// - Returns: (`self`^`x`) mod `m` for positive `x`, ((`self`^-`x`) mod `m`) modInverse `m` for negative `x`
-    public func expMod(_ x: BInt, _ m: BInt) -> BInt {
-        precondition(m.isPositive, "Modulus must be positive")
-        if m.isOne {
-            return BInt.ZERO
-        }
-        let exponent = x.isNegative ? -x : x
-        var result: BInt
-        if m.isOdd {
-            result = BarrettModulus(self, m).expMod(exponent)
-        } else if m.isPow2 {
-            result = Pow2Modulus(self, m).expMod(exponent)
-        } else {
-            
-            // Split the modulus into an odd part and a power of 2 part
-
-            let trailing = m.trailingZeroBitCount
-            let oddModulus = m >> trailing
-            let pow2Modulus = BInt.ONE << trailing
-            let a1 = BarrettModulus(self, oddModulus).expMod(exponent)
-            let a2 = Pow2Modulus(self, pow2Modulus).expMod(exponent)
-            let y1 = pow2Modulus.modInverse(oddModulus)
-            let y2 = oddModulus.modInverse(pow2Modulus)
-            
-            // Combine via the Chinese Remainder Theorem
-
-            result = (a1 * pow2Modulus * y1 + a2 * oddModulus * y2).mod(m)
-        }
-        if x.isNegative {
-            result = result.modInverse(m)
-        }
-        if self.isNegative {
-            return x.isEven || result.isZero ? result : m - result
-        } else {
-            return result
-        }
-    }
+	public func expMod(_ x: BInt, _ m: BInt) -> BInt {
+		precondition(m.isPositive, "Modulus must be positive")
+		if m.isOne {
+			return BInt.ZERO
+		}
+		let exponent = x.isNegative ? -x : x
+		var result = m.isPow2 ? Pow2Modulus(self, m).expMod(exponent) : BarrettModulus(self, m).expMod(exponent)
+		if x.isNegative {
+			result = result.modInverse(m)
+		}
+		if self.isNegative {
+			return x.isEven || result.isZero ? result : m - result
+		} else {
+			return result
+		}
+	}
 
     /// Modular exponentiation - Int version
     ///
@@ -1691,6 +1765,11 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
     
     
     // MARK: Prime number functions
+	
+	static let smallOddPrimes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+
+	// Small odd prime product
+	static let SPP = BInt("152125131763605")! // = 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23 * 29 * 31 * 37 * 41
     
     static internal func randomBytes(_ bytes: inout Bytes) {
         guard SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes) == errSecSuccess else {
@@ -1704,9 +1783,6 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
         }
     }
     
-    // Small prime product
-    static let SPP = BInt("152125131763605")! // = 3 * 5 * 7 * 11 * 13 * 17 * 19 * 23 * 29 * 31 * 37 * 41
-    
     static func smallPrime(_ bitLength: Int) -> BInt {
         let multiple8 = bitLength & 0x7 == 0
         let length = multiple8 ? (bitLength + 7) >> 3 + 1 : (bitLength + 7) >> 3
@@ -1714,6 +1790,7 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
         let highBit = Byte(1 << ((bitLength + 7) & 0x7))  // High bit of high int
         let highMask = Byte((Int(highBit) << 1) - 1)  // Bits to keep in high int
         
+	loop:
         while true {
             BInt.randomBytes(&bytes)
             if multiple8 {
@@ -1724,23 +1801,24 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
             }
             let x = BInt(signed: bytes)
             if bitLength > 6 {
-                let r = x % SPP
-                if r % 3 == 0 || r % 5 == 0 || r % 7 == 0 || r % 11 == 0 || r % 13 == 0 || r % 17 == 0 ||
-                    r % 19 == 0 || r % 23 == 0 || r % 29 == 0 || r % 31 == 0 || r % 37 == 0 || r % 41 == 0 {
-                    continue
-                }
-            }
+				let r = x % SPP
+				for sp in BInt.smallOddPrimes {
+					if r % sp == 0 {
+						continue loop
+					}
+				}
+			}
             if x.isProbablyPrime() {
                 return x
             }
         }
     }
     
-    static func largePrime(_ bitLength: Int, _ p: Int) -> BInt {
+    static func largePrime(_ bitLength: Int) -> BInt {
         var x = BInt(bitWidth: bitLength)
         x.setBit(bitLength - 1)
         x.clearBit(0)
-        var bs = BitSieve(x, p)
+        var bs = BitSieve(x)
         var candidate = bs.retrieve()
         while candidate == nil || candidate!.bitWidth != bitLength {
             x += BInt(2 * bs.length)
@@ -1749,7 +1827,7 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
                 x.setBit(bitLength - 1)
             }
             x.clearBit(0)
-            bs = BitSieve(x, p)
+            bs = BitSieve(x)
             candidate = bs.retrieve()
         }
         return candidate!
@@ -1760,111 +1838,75 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
     /// - Precondition: Probability parameter `p` is positive
     /// - Parameter p: If `true` is returned, `self` is prime with probability > 1 - 1/2^p
     /// - Returns: `true` if `self` is probably prime, `false` if `self` is definitely not prime
-    public func isProbablyPrime(_ p: Int = 30) -> Bool {
-        precondition(p > 0, "Probability must be positive")
-        if self == BInt.TWO {
-            return true
-        }
-        if self.isEven || self < 2 {
-            return false
-        }
-        var rounds: Int
-        if self.bitWidth < 100 {
-            rounds = 50
-        } else if self.bitWidth < 256 {
-            rounds = 27
-        } else if bitWidth < 512 {
-            rounds = 15
-        } else if bitWidth < 768 {
-            rounds = 8
-        } else if bitWidth < 1024 {
-            rounds = 4
-        } else {
-            rounds = 2
-        }
-        rounds = Swift.min((p + 1) / 2, rounds)
-        let s1 = self - 1
-        for _ in 0 ..< rounds {
-            if !self.pass(s1.randomLessThan() + 1) {
-                return false
-            }
-        }
-        return true
-    }
-    
-    func pass(_ a: BInt) -> Bool {
-        let s_1 = self - 1
-        let k = s_1.trailingZeroBitCount
-        let m = s_1 >> k
-        var x = a.expMod(m, self)
-        if x == 1 {
-            return true
-        }
-        if k > 0 {
-            for _ in 0 ..< k - 1 {
-                if x == s_1 {
-                    return true
-                }
-                x = (x ** 2) % self
-            }
-        }
-        return x == s_1
-    }
+	public func isProbablyPrime(_ p: Int = 30) -> Bool {
+		if self == BInt.TWO {
+			return true
+		}
+		if self < BInt.TWO || self.isEven {
+			return false
+		}
+		for sp in BInt.smallOddPrimes {
+			if self % sp == 0 {
+				return self == sp
+			}
+		}
+		return self.bailliePSW()
+	}
     
     /// The next probable prime greater than `self`
     ///
     /// - Precondition: Probability parameter `p` is positive
     /// - Parameter p: The returned number is prime with probability > 1 - 1/2^p, default value is 30
     /// - Returns: The smallest probable prime greater than `self`, returns 2 if `self` is negative
-    public func nextPrime(_ p: Int = 30) -> BInt {
-        precondition(p > 0, "Probability must be positive")
-        if self < BInt.TWO {
-            return BInt.TWO
-        }
-        var result = self + BInt.ONE
-        if result.bitWidth < 100 {
-            if result.isEven {
-                result += BInt.ONE
-            }
-            while true {
-                if result.bitWidth > 6 {
-                    let r = result % BInt.SPP
-                    if r % 3 == 0 || r % 5 == 0 || r % 7 == 0 || r % 11 == 0 || r % 13 == 0 || r % 17 == 0 ||
-                        r % 19 == 0 || r % 23 == 0 || r % 29 == 0 || r % 31 == 0 || r % 37 == 0 || r % 41 == 0 {
-                        result += BInt.TWO
-                        continue
-                    }
-                }
-                if result.bitWidth < 4 || result.isProbablyPrime(p) {
-                    return result
-                }
-                result += BInt.TWO
-            }
-        }
-        if result.isOdd {
-            result -= BInt.ONE
-        }
-        while true {
-            let sieve = BitSieve(result, p)
-            let candidate = sieve.retrieve()
-            if candidate != nil {
-                return candidate!
-            }
-            result += 2 * sieve.length
-        }
-    }
+	public func nextPrime(_ p: Int = 30) -> BInt {
+		if self < BInt.TWO {
+			return BInt.TWO
+		}
+		var result = self + BInt.ONE
+		if result.bitWidth < 100 {
+			if result.isEven {
+				result += BInt.ONE
+			}
+		loop:
+			while true {
+				if result.bitWidth > 6 {
+					let r = result % BInt.SPP
+					for sp in BInt.smallOddPrimes {
+						if r % sp == 0 {
+							result += BInt.TWO
+							continue loop
+						}
+					}
+				}
+				if result.bitWidth < 4 || result.isProbablyPrime() {
+					return result
+				}
+				result += BInt.TWO
+			}
+		}
+		if result.isOdd {
+			result -= BInt.ONE
+		}
+		while true {
+			let sieve = BitSieve(result)
+			let candidate = sieve.retrieve()
+			if candidate != nil {
+				return candidate!
+			}
+			result += 2 * sieve.length
+		}
+	}
     
     /// A probable prime number with a given bitwidth
     ///
     /// - Precondition: `bitWidth > 1` and probability parameter `p` is positive
     /// - Parameters:
     ///   - bitWidth: The bitWidth - must be > 1
-    ///   - p: The returned number is prime with probability > 1 - 1/2^p, default value is 30
+	///   - p: Is not used, its value does not matter - it is retained for backward compatibility reasons
     /// - Returns: A prime number with the specified bitwidth and probability
     public static func probablePrime(_ bitWidth: Int, _ p: Int = 30) -> BInt {
         precondition(bitWidth > 1, "Bitwidth must be > 1")
-        precondition(p > 0, "Probability must be positive")
-        return bitWidth < 100 ? smallPrime(bitWidth) : largePrime(bitWidth, p)
+        return bitWidth < 100 ? smallPrime(bitWidth) : largePrime(bitWidth)
     }
     
     /// Product of primes up to n
@@ -2521,3 +2563,5 @@ public struct BInt: CustomStringConvertible, Comparable, Codable, Sendable, Equa
     }
 
 }
+
+extension BInt : Codable, Sendable { }
