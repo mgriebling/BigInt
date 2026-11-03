@@ -12,54 +12,54 @@ Four large numbers `a1000`, `b1000`, `c2000` and `p1000` were used throughout th
 
 | Operation | Swift code | Time |
 |:----------|:-----------|-----:|
-| As string | `c2000.asString()` | 8.3 uSec |
-| As signed bytes | `c2000.asSignedBytes()` | 0.18 uSec |
-| Bitwise and | `a1000 & b1000` | 0.049 uSec |
-| Bitwise or | `a1000 \| b1000` | 0.049 uSec |
-| Bitwise xor | `a1000 ^ b1000` | 0.049 uSec |
-| Bitwise not | `~c2000` | 0.066 uSec |
-| Test bit | `c2000.testBit(701)` | 0.016 uSec |
-| Flip bit | `c2000.flipBit(701)` | 0.017 uSec |
-| Set bit | `c2000.setBit(701)` | 0.017 uSec |
-| Clear bit | `c2000.clearBit(701)` | 0.017 uSec |
-| Addition | `a1000 + b1000` | 0.05 uSec |
-| Subtraction | `a1000 - b1000` | 0.06 uSec |
-| Multiplication | `a1000 * b1000` | 0.25 uSec |
-| Division | `c2000 / a1000` | 1.8 uSec |
-| Exact division | `(a1000 * b1000).quotientExact(dividingBy: a1000) ` | 1.6 uSec |
-| Modulus | `c2000.mod(a1000)` | 1.8 uSec |
-| Inverse modulus | `c2000.modInverse(p1000)` | 64 uSec |
-| Modular exponentiation | `a1000.expMod(b1000, c2000)` | 2.7 mSec |
-| Equal | `c2000 + 1 == c2000` | 0.016 uSec |
-| Less than | `b1000 + 1 < b1000` | 0.019 uSec |
-| Shift 1 left | `c2000 <<= 1` | 0.07 uSec |
-| Shift 1 right | `c2000 >>= 1` | 0.08 uSec |
-| Shift 100 left | `c2000 <<= 100` | 0.14 uSec |
-| Shift 100 right | `c2000 >>= 100` | 0.09 uSec |
-| Is probably prime | `p1000.isProbablyPrime()` | 4.7 mSec |
-| Make probable 1000 bit prime | `BInt.probablePrime(1000)` | 45 mSec |
-| Next probable prime | `c2000.nextPrime()` | 570 mSec |
-| Primorial | `BInt.primorial(100000)` | 2.3 mSec |
-| Binomial | `BInt.binomial(100000, 10000)` | 17 mSec |
-| Factorial | `BInt.factorial(100000)` | 46 mSec |
-| Fibonacci | `BInt.fibonacci(100000)` | 17 mSec |
-| Greatest common divisor | `a1000.gcd(b1000)` | 22 uSec |
-| Extended gcd | `a1000.gcdExtended(b1000)` | 62 uSec |
-| Least common multiple | `a1000.lcm(b1000)` | 24 uSec |
-| Make random number | `c2000.randomLessThan()` | 0.48 uSec |
-| Square | `c2000 ** 2` | 0.51 uSec |
-| Square root | `c2000.sqrt()` | 9.9 uSec |
-| Square root and remainder | `c2000.sqrtRemainder()` | 9.9 uSec |
-| Is perfect square | `(c2000 * c2000).isPerfectSquare()` | 13 uSec |
-| Square root modulo | `b1000.sqrtMod(p1000)` | 1.2 mSec |
-| Power | `c2000 ** 111` | 1.3 mSec |
-| Root | `c2000.root(111)` | 13 uSec |
-| Root and remainder | `c2000.rootRemainder(111)` | 14 uSec |
-| Is perfect root | `c2000.isPerfectRoot()` | 11 mSec |
-| Jacobi symbol | `c2000.jacobiSymbol(p1000)` | 0.11 mSec |
-| Kronecker symbol | `c2000.kroneckerSymbol(p1000)` | 0.11 mSec |
-| Bernoulli number | `BFraction.bernoulli(1000)` | 65 mSec |
-| Harmonic number | `BFraction.harmonic(10000)` | 30 mSec |
+| As string | `c2000.asString()` | 8.3 μS |
+| As signed bytes | `c2000.asSignedBytes()` | 0.18 μS |
+| Bitwise and | `a1000 & b1000` | 0.049 μS |
+| Bitwise or | `a1000 \| b1000` | 0.049 μS |
+| Bitwise xor | `a1000 ^ b1000` | 0.049 μS |
+| Bitwise not | `~c2000` | 0.066 μS |
+| Test bit | `c2000.testBit(701)` | 0.016 μS |
+| Flip bit | `c2000.flipBit(701)` | 0.017 μS |
+| Set bit | `c2000.setBit(701)` | 0.017 μS |
+| Clear bit | `c2000.clearBit(701)` | 0.017 μS |
+| Addition | `a1000 + b1000` | 0.05 μS |
+| Subtraction | `a1000 - b1000` | 0.06 μS |
+| Multiplication | `a1000 * b1000` | 0.25 μS |
+| Division | `c2000 / a1000` | 1.8 μS |
+| Exact division | `(a1000 * b1000).quotientExact(dividingBy: a1000) ` | 1.6 μS |
+| Modulus | `c2000.mod(a1000)` | 1.8 μS |
+| Inverse modulus | `c2000.modInverse(p1000)` | 64 μS |
+| Modular exponentiation | `a1000.expMod(b1000, c2000)` | 2.7 mS |
+| Equal | `c2000 + 1 == c2000` | 0.016 μS |
+| Less than | `b1000 + 1 < b1000` | 0.019 μS |
+| Shift 1 left | `c2000 <<= 1` | 0.07 μS |
+| Shift 1 right | `c2000 >>= 1` | 0.08 μS |
+| Shift 100 left | `c2000 <<= 100` | 0.14 μS |
+| Shift 100 right | `c2000 >>= 100` | 0.09 μS |
+| Is probably prime | `p1000.isProbablyPrime()` | 4.7 mS |
+| Make probable 1000 bit prime | `BInt.probablePrime(1000)` | 45 mS |
+| Next probable prime | `c2000.nextPrime()` | 570 mS |
+| Primorial | `BInt.primorial(100000)` | 2.3 mS |
+| Binomial | `BInt.binomial(100000, 10000)` | 17 mS |
+| Factorial | `BInt.factorial(100000)` | 46 mS |
+| Fibonacci | `BInt.fibonacci(100000)` | 17 mS |
+| Greatest common divisor | `a1000.gcd(b1000)` | 22 μS |
+| Extended gcd | `a1000.gcdExtended(b1000)` | 62 μS |
+| Least common multiple | `a1000.lcm(b1000)` | 24 μS |
+| Make random number | `c2000.randomLessThan()` | 0.48 μS |
+| Square | `c2000 ** 2` | 0.51 μS |
+| Square root | `c2000.sqrt()` | 9.9 μS |
+| Square root and remainder | `c2000.sqrtRemainder()` | 9.9 μS |
+| Is perfect square | `(c2000 * c2000).isPerfectSquare()` | 13 μS |
+| Square root modulo | `b1000.sqrtMod(p1000)` | 1.2 mS |
+| Power | `c2000 ** 111` | 1.3 mS |
+| Root | `c2000.root(111)` | 13 μS |
+| Root and remainder | `c2000.rootRemainder(111)` | 14 μS |
+| Is perfect root | `c2000.isPerfectRoot()` | 11 mS |
+| Jacobi symbol | `c2000.jacobiSymbol(p1000)` | 0.11 mS |
+| Kronecker symbol | `c2000.kroneckerSymbol(p1000)` | 0.11 mS |
+| Bernoulli number | `BFraction.bernoulli(1000)` | 65 mS |
+| Harmonic number | `BFraction.harmonic(10000)` | 30 mS |
 
 a1000 = 3187705437890850041662973758105262878153514794996698172406519277876060364087986868049465132757493318066301987043192958841748826350731448419937544810921786918975580180410200630645469411588934094075222404396990984350815153163569041641732160380739556436955287671287935796642478260435292021117614349253825
 
